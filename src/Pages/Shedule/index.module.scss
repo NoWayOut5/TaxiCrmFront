@@ -1,0 +1,18 @@
+.row{
+  cursor: pointer;
+}
+
+.formItem{
+  display: flex;
+  align-items: center;
+}
+
+.label{
+  width: 160px;
+  text-align: right;
+  margin-right: 4px;
+}
+
+.formItemChildren{
+  //margin-left: auto;
+}
