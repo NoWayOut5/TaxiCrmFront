@@ -163,7 +163,7 @@ const Table2 = ({
 
   const columns = [
     {
-      title: 'Имя(ЮЛ)',
+      title: 'Имя',
       dataIndex: 'name',
       key: 'name',
     },
@@ -279,7 +279,7 @@ const Users = (props) => {
         type="primary"
         onClick={changeModalState}
       >
-        Добавить пользователя
+        Добавить
       </Button>
       {modalState.isOpen &&
       <UserFormModal
