@@ -7,7 +7,8 @@ import {
   Table,
   Modal,
   Input,
-  Form, Select,
+  Form,
+  Select
 } from 'antd'
 import { useForm, Controller } from "react-hook-form";
 
@@ -164,6 +165,8 @@ const ChangeSheduleModal = ({
   const { control, getValues, reset } = useForm();
   const [ days, setDays ] = useState(dasdas)
 
+  const { Option } = Select;
+
   const items = [
     { label: "Город", name: "cityid", inputType: 'select', props: cities },
     { label: "Юл", name: "contractorid", inputType: 'select', props: yls },
@@ -209,13 +212,11 @@ const ChangeSheduleModal = ({
     const data = JSON.parse(JSON.stringify(getValues()));
     delete data.days;
 
-    console.log(days)
-
-    // if(modalProps.sheduleid){
-    //   onChangeShedule(modalProps.sheduleid, data, days)
-    // }else{
-    //   onAddShedule(data, days)
-    // }
+    if(modalProps.sheduleid){
+      onChangeShedule(modalProps.sheduleid, data, days)
+    }else{
+      onAddShedule(data, days)
+    }
   }
 
   const changeDay = (ev, item) => {
@@ -259,7 +260,6 @@ const ChangeSheduleModal = ({
         let selectedDay = null;
 
         if(dayName && days.length){
-          console.log(days, dayName, dayDirection)
           selectedDay = days.find(d => d.name == dayName && d.direction == dayDirection)
         }
 
@@ -353,10 +353,10 @@ const Shedule = ({
       changeIsOpenModal()
     })
 
-    days.forEach(item => {
-      item.created && addDay(item)
-      item.changed && changeDay(item)
-    })
+    // days.forEach(item => {
+    //   item.created && addDay(item)
+    //   item.changed && changeDay(item)
+    // })
   }
 
   const onChangeShedule = (id, values, changedDays) => {
