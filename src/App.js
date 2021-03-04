@@ -33,7 +33,7 @@ function App() {
         type="card"
       >
         <TabPane tab="Звонки" key="1">
-          Звон
+          В разработке
         </TabPane>
         <TabPane tab="Расписание" key="2">
           <Shedule
@@ -42,7 +42,7 @@ function App() {
           />
         </TabPane>
         <TabPane tab="Отчеты" key="3">
-          Content of Tab Pane 3
+          В разработке
         </TabPane>
         <TabPane tab="Пользователи" key="4">
           <UsersPage/>
