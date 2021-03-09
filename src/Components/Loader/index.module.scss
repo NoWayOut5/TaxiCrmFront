@@ -1,0 +1,29 @@
+.rcProgressBar{
+  position: fixed;
+  left: 0;
+  right: 0;
+  z-index: 100;
+}
+
+.rcProgressBar.preloaderBottom{
+  bottom: 0;
+}
+.rcProgressBar.preloaderTop{
+  top: 0;
+}
+
+.rcProgressBar, .rcProgressBar div{
+  transition: all 0.4s ease;
+  opacity: 1;
+}
+
+.rcProgressEnd div{
+  opacity: 0;
+}
+
+.preloader{
+  position: absolute;
+  left: 0;
+  z-index: 10000;
+  border-radius: 2px;
+}

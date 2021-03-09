@@ -17,6 +17,7 @@ export const urls = {
   getYl: '/contractor/findall',
   saveShedule: '/shedule/save',
   changeShedule: '/shedule',
+  importExcel: '/shedule/import',
 
   changeDay: '/day/',
   saveDay: '/days/save'

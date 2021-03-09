@@ -8,10 +8,12 @@ import Reports from "./Pages/Reports";
 import Shedule from "./Pages/Shedule";
 
 import st from './styles/app.module.scss'
+import Loader from "./Components/Loader";
 
 function App() {
   const [cities, setSities] = useState([])
   const [yls, setYls] = useState([])
+  const [loaderState, setLoaderState] = useState();
 
   useEffect(() => {
     api.get(urls.cities).then((res) => {
@@ -28,6 +30,10 @@ function App() {
 
   return (
     <div className={st.tabs}>
+      <Loader
+        start={loaderState}
+        position="top"
+      />
       <Tabs
         defaultActiveKey="2"
         type="card"
@@ -39,6 +45,8 @@ function App() {
           <Shedule
             cities={cities}
             yls={yls}
+            setLoaderState={setLoaderState}
+            loaderState={loaderState}
           />
         </TabPane>
         <TabPane tab="Отчеты" key="3">

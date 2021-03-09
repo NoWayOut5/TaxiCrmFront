@@ -1,17 +1,24 @@
 import React, { useEffect, useState } from 'react';
 import api, { urls } from 'api';
 import moment from 'moment'
+import readXlsxFile from 'read-excel-file'
+import { useForm, Controller } from "react-hook-form";
 
+
+import SendExcel from "./SendExcel";
+import Loader from '../../Components/Loader'
 import {
   Button,
   Table,
   Modal,
   Input,
   Form,
-  Select
+  Select,
+  Upload,
+  notification
 } from 'antd'
-import { useForm, Controller } from "react-hook-form";
 
+import { UploadOutlined } from '@ant-design/icons';
 import st from './index.module.scss'
 
 const uniqId = function () {
@@ -38,10 +45,38 @@ const shortDays = {
   'вс': 'vs',
 }
 
+const shortDaysEng = {
+  'mon': 'pn',
+  'tue': 'vt',
+  'wed': 'sr',
+  'thu': 'cht',
+  'fri': 'pt',
+  'sat': 'sb',
+  'sun': 'vs',
+}
+
+const layout = {
+  labelCol: { span: 8 },
+  wrapperCol: { span: 16 },
+};
+
 const FormItem = ({ label, children }) => (
   <div className={st.formItem}>
     <div className={st.label}>{label} : </div>
     <div className={st.formItemChildren}> {children}</div>
+  </div>
+)
+
+const FileInput = ({
+  name,
+  onChange
+}) => (
+  <div>
+    <input
+      type="file"
+      id={name}
+      onChange={onChange}
+    />
   </div>
 )
 
@@ -57,8 +92,12 @@ const SheduleTable = ({
     const daysTitle = {}
     const cityname = cities.find(city => item.cityid == city.cityid)
 
-    item.days.forEach(day => {
-      daysTitle[shortDays[day.name]] = day.time
+    item.days && item.days.forEach((day) => {
+      if(day.sheduleid >= 10){
+        daysTitle[shortDaysEng[day.name]] = day.time
+      }else{
+        daysTitle[shortDays[day.name]] = day.time
+      }
     })
 
     return {
@@ -71,73 +110,32 @@ const SheduleTable = ({
   });
 
   const columns = [
-    {
-      title: 'N',
-      dataIndex: 'n',
-    },
-    {
-      title: 'Город',
-      dataIndex: 'cityname',
-    },
-    {
-      title: 'ФИО',
-      dataIndex: 'clname',
-    },
-    {
-      title: 'Телефон',
-      dataIndex: 'phone',
-    },
-    {
-      title: 'Адресс проживания',
-      dataIndex: 'startingpoint',
-    },
-    {
-      title: 'Способ перевозки',
-      dataIndex: 'transportway',
-    },
-    {
-      title: 'Понедельник',
-      dataIndex: ["daysTitle", "pn"],
-    },
-    {
-      title: 'Вторник',
-      dataIndex: ["daysTitle", "vt"],
-    },
-    {
-      title: 'Среда',
-      dataIndex: ["daysTitle", "sr"],
-    },
-    {
-      title: 'Четверг',
-      dataIndex: ["daysTitle", "cht"],
-    },
-    {
-      title: 'Пятница',
-      dataIndex: ["daysTitle", "pt"],
-    },
-    {
-      title: 'Суббота',
-      dataIndex: ["daysTitle", "sb"],
-    },
-    {
-      title: 'Воскресенье',
-      dataIndex: ["daysTitle", "vs"],
-    },
-    {
-      title: 'Пункт назначения',
-      dataIndex: 'destination',
-    },
-    {
-      title: 'Примечание',
-      dataIndex: 'note',
-    },
+    { title: 'N', dataIndex: 'n' },
+    { title: 'Город', dataIndex: 'cityname' },
+    { title: 'ФИО', dataIndex: 'clname' },
+    { title: 'Телефон', dataIndex: 'phone' },
+    { title: 'Адресс проживания', dataIndex: 'startingpoint' },
+    { title: 'Способ перевозки', dataIndex: 'transportway' },
+    { title: 'Понедельник', dataIndex: ["daysTitle", "pn"] },
+    { title: 'Вторник', dataIndex: ["daysTitle", "vt"] },
+    { title: 'Среда', dataIndex: ["daysTitle", "sr"] },
+    { title: 'Четверг', dataIndex: ["daysTitle", "cht"] },
+    { title: 'Пятница', dataIndex: ["daysTitle", "pt"] },
+    { title: 'Суббота', dataIndex: ["daysTitle", "sb"] },
+    { title: 'Воскресенье', dataIndex: ["daysTitle", "vs"] },
+    { title: 'Пункт назначения', dataIndex: 'destination' },
+    { title: 'Примечание', dataIndex: 'note' },
   ]
 
   return (
     <Table
       columns={columns}
       dataSource={dataSource}
+      showHeader={true}
+      size="middle"
+      bordered={true}
       rowClassName={st.row}
+      style={{ height: '100%' }}
       scroll={{ x: true }}
       onRow={(row) => ({
         onDoubleClick: () => {
@@ -152,20 +150,16 @@ const SheduleTable = ({
 const ChangeSheduleModal = ({
   isModalOpen,
   modalProps = {},
-  modalProps: {
-    days: dasdas = []
-  },
   cities,
   yls,
 
   changeIsOpenModal,
   onAddShedule,
+  setModalProps,
   onChangeShedule
 }) => {
   const { control, getValues, reset } = useForm();
-  const [ days, setDays ] = useState(dasdas)
-
-  const { Option } = Select;
+  const [ days, setDays ] = useState([])
 
   const items = [
     { label: "Город", name: "cityid", inputType: 'select', props: cities },
@@ -174,49 +168,52 @@ const ChangeSheduleModal = ({
     { label: "Телефон", name: "phone" },
     { label: "Адрес проживания", name: "startingpoint" },
     { label: "Способ перевозки", name: "transportway" },
-    { label: "Понедельник (вперед)", inputType: 'dayInput', dayDirection: 'in', dayName: 'пн', uuid: uniqId() },
-    { label: "Понедельник (назад)", inputType: 'dayInput', dayDirection: 'out', dayName: 'пн', uuid: uniqId() },
-    { label: "Вторник (вперед)", inputType: 'dayInput', dayDirection: 'in', dayName: 'вт', uuid: uniqId() },
-    { label: "Вторник (назад)", inputType: 'dayInput', dayDirection: 'out', dayName: 'вт', uuid: uniqId() },
-    { label: "Среда (вперед)", inputType: 'dayInput', dayDirection: 'in', dayName: 'ср', uuid: uniqId() },
-    { label: "Среда (назад)", inputType: 'dayInput', dayDirection: 'out', dayName: 'ср', uuid: uniqId() },
-    { label: "Четверг (вперед)", inputType: 'dayInput', dayDirection: 'in', dayName: 'чт', uuid: uniqId() },
-    { label: "Четверг (назад)", inputType: 'dayInput', dayDirection: 'out', dayName: 'чт', uuid: uniqId() },
-    { label: "Пятница (вперед)", inputType: 'dayInput', dayDirection: 'in', dayName: 'пт', uuid: uniqId() },
-    { label: "Пятница (назад)", inputType: 'dayInput', dayDirection: 'out', dayName: 'пт', uuid: uniqId() },
-    { label: "Суббота (вперед)", inputType: 'dayInput', dayDirection: 'in', dayName: 'сб', uuid: uniqId() },
-    { label: "Суббота (назад)", inputType: 'dayInput', dayDirection: 'out', dayName: 'сб', uuid: uniqId() },
-    { label: "Воскресенье (вперед)", inputType: 'dayInput', dayDirection: 'in', dayName: 'вс', uuid: uniqId() },
-    { label: "Воскресенье (назад)", inputType: 'dayInput', dayDirection: 'out', dayName: 'вс', uuid: uniqId() },
+    { label: "Понедельник (вперед)", inputType: 'day', dayDirection: 'in', dayName: 'пн', newDayName: 'mon' },
+    { label: "Понедельник (назад)", inputType: 'day', dayDirection: 'out', dayName: 'пн', newDayName: 'mon' },
+    { label: "Вторник (вперед)", inputType: 'day', dayDirection: 'in', dayName: 'вт', newDayName: 'tue' },
+    { label: "Вторник (назад)", inputType: 'day', dayDirection: 'out', dayName: 'вт', newDayName: 'tue' },
+    { label: "Среда (вперед)", inputType: 'day', dayDirection: 'in', dayName: 'ср', newDayName: 'wed' },
+    { label: "Среда (назад)", inputType: 'day', dayDirection: 'out', dayName: 'ср', newDayName: 'wed' },
+    { label: "Четверг (вперед)", inputType: 'day', dayDirection: 'in', dayName: 'чт', newDayName: 'thu' },
+    { label: "Четверг (назад)", inputType: 'day', dayDirection: 'out', dayName: 'чт', newDayName: 'thu' },
+    { label: "Пятница (вперед)", inputType: 'day', dayDirection: 'in', dayName: 'пт', newDayName: 'fri' },
+    { label: "Пятница (назад)", inputType: 'day', dayDirection: 'out', dayName: 'пт', newDayName: 'fri' },
+    { label: "Суббота (вперед)", inputType: 'day', dayDirection: 'in', dayName: 'сб', newDayName: 'sat' },
+    { label: "Суббота (назад)", inputType: 'day', dayDirection: 'out', dayName: 'сб', newDayName: 'sat' },
+    { label: "Воскресенье (вперед)", inputType: 'day', dayDirection: 'in', dayName: 'вс', newDayName: 'sun' },
+    { label: "Воскресенье (назад)", inputType: 'day', dayDirection: 'out', dayName: 'вс', newDayName: 'sun' },
     { label: "Пункт назначения", name: "destination" },
     { label: "Примечание", name: "note" },
     { label: "Активно с", name: "datefrom", defaultValue: moment().format("MM/DD/YYYY") },
-    { label: "Активно до", name: "dateto", defaultValue: moment().set({ 'year': 2099, 'month': 12, 'day': 31 }).format("MM/DD/YYYY"), },
+    { label: "Активно до", name: "dateto", defaultValue: moment().set({ 'year': 2099, 'month': 12, 'day': 31 }).format("MM/DD/YYYY") },
   ]
+
+  const { Option } = Select;
 
   useEffect(() => {
     reset(modalProps)
   }, [modalProps])
 
   useEffect(() => {
-    const { days: dddd = [] } = modalProps
-    setDays(dddd)
-  }, [modalProps.days])
-
-  const layout = {
-    labelCol: { span: 8 },
-    wrapperCol: { span: 16 },
-  };
+    if(modalProps && modalProps.days){
+      setDays(modalProps.days)
+    }
+  }, [modalProps ? modalProps.days : []])
 
   const onOk = () => {
     const data = JSON.parse(JSON.stringify(getValues()));
     delete data.days;
 
     if(modalProps.sheduleid){
-      onChangeShedule(modalProps.sheduleid, data, days)
+      onChangeShedule(modalProps.sheduleid, data)
     }else{
-      onAddShedule(data, days)
+      onAddShedule(data)
     }
+  }
+
+  const onCancel = () => {
+    changeIsOpenModal();
+    setModalProps(null);
   }
 
   const changeDay = (ev, item) => {
@@ -251,12 +248,12 @@ const ChangeSheduleModal = ({
   return (
     <Modal
       visible={isModalOpen}
-      onCancel={changeIsOpenModal}
+      onCancel={onCancel}
       onOk={onOk}
       style={{ top: 10, bottom: 10 }}
     >
       {items.map((column, ix) => {
-        const { label, name, inputType, props = [], defaultValue = '', dayName, dayDirection, uuid } = column;
+        const { label, name, inputType, props = [], defaultValue = '', dayName, dayDirection } = column;
         let selectedDay = null;
 
         if(dayName && days.length){
@@ -288,18 +285,15 @@ const ChangeSheduleModal = ({
                   control={control}
                 />
               ),
-              'dayInput': (
+              'day': (
                 <Input
                   value={selectedDay ? selectedDay.time : ''}
-                  onChange={(ev) => {
-                    (selectedDay && selectedDay.dayid) ? changeDay(ev, selectedDay, modalProps.sheduleid) : addDay(ev, { dayName, dayDirection })
-                  }}
                 />
               ),
               'undefined': (
                 <Controller
                   as={<Input />}
-                  name={name}
+                  name={dayName ? dayName + '_' + dayDirection : name }
                   control={control}
                   defaultValue={defaultValue}
                 />
@@ -314,12 +308,14 @@ const ChangeSheduleModal = ({
 
 const Shedule = ({
   cities,
-  yls
+  yls,
+  loaderState,
+  setLoaderState
 }) => {
   const [shedule, setShedule] = useState([])
 
   const [isModalOpen, setIsModalOpen] = useState(false)
-  const [modalProps, setModalProps] = useState({})
+  const [modalProps, setModalProps] = useState(null)
 
   const handleShedule = (data) => {
     const resData = data.map(item => {
@@ -338,39 +334,47 @@ const Shedule = ({
     })
   }, [])
 
-  const addDay = (values) => {
-    api.post(urls.saveDay, values)
-  }
-
-  const changeDay = (values) => {
-    api.put(urls.changeDay + values.dayid, values)
-  }
-
-  const onAddShedule = (values, days) => {
+  const onAddShedule = (values) => {
     api.post(urls.saveShedule, values).then(res => {
       setShedule(prev => ([...prev, res.data]))
-      setModalProps({})
+      setModalProps(null)
       changeIsOpenModal()
     })
-
-    // days.forEach(item => {
-    //   item.created && addDay(item)
-    //   item.changed && changeDay(item)
-    // })
   }
 
-  const onChangeShedule = (id, values, changedDays) => {
+  const onChangeShedule = (id, values) => {
     api.put(`${urls.changeShedule}/${id}`, values).then(res => {
       setShedule(prev => {
         return prev.map(item => item.sheduleid == res.data.sheduleid ? res.data : item)
       })
-      setModalProps({});
+      setModalProps(null)
       changeIsOpenModal()
     })
+  }
 
-    // days.forEach(item => {
-    //   item.dayid ? addDay(item) : changeDay(item)
-    // })
+  const onSendExcelFile = (json) => {
+    setLoaderState(true)
+
+    const promises = json.rows.map(item => {
+      return new Promise(((resolve, reject) => {
+        api.post('/shedule/import', item)
+          .then(response => {
+            setShedule(prev => ([...prev, response.data]))
+            resolve(response)
+          })
+          .catch(error => reject(error))
+      }))
+    })
+
+    Promise.all(promises)
+      .then(() => {
+        setLoaderState(false);
+        notification.open({ message: 'Файлы успешно загружены' });
+      })
+      .catch((err) => {
+        setLoaderState(false);
+        notification.error({ message: 'Некоторые файлы не были загружены' });
+      })
   }
 
   const changeIsOpenModal = () => {
@@ -391,17 +395,25 @@ const Shedule = ({
         modalProps={modalProps}
         isModalOpen={isModalOpen}
         changeIsOpenModal={changeIsOpenModal}
+        setModalProps={setModalProps}
         onAddShedule={onAddShedule}
         onChangeShedule={onChangeShedule}
       />
-      <Button
-        onClick={() => {
-          setModalProps({})
-          changeIsOpenModal()
-        }}
-      >
-        Добавить
-      </Button>
+      <div className={st.excelContainer}>
+        <Button
+          onClick={() => {
+            setModalProps(null)
+            changeIsOpenModal()
+          }}
+        >
+          Добавить
+        </Button>
+        <SendExcel
+          onParseExcel={onSendExcelFile}
+          name="excelFile"
+          title="Загрузить excel файл"
+        />
+      </div>
 
     </div>
   );
