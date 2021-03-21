@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const instance = axios.create({
-  baseURL: 'https://taxicrmback-prod.herokuapp.com',
+  baseURL: 'https://taxicrmback-preprod.herokuapp.com',
   timeout: 30000,
 });
 
