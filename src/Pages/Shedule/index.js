@@ -3,9 +3,11 @@ import api, { urls } from 'api';
 import moment from 'moment'
 import readXlsxFile from 'read-excel-file'
 import { useForm, Controller } from "react-hook-form";
-
+import globalStore from '../../stores'
+import { useStore } from 'effector-react'
 
 import SendExcel from "./SendExcel";
+import FormItem from '../../Components/FormItem'
 import Loader from '../../Components/Loader'
 import {
   Button,
@@ -60,13 +62,6 @@ const layout = {
   wrapperCol: { span: 16 },
 };
 
-const FormItem = ({ label, children }) => (
-  <div className={st.formItem}>
-    <div className={st.label}>{label} : </div>
-    <div className={st.formItemChildren}> {children}</div>
-  </div>
-)
-
 const FileInput = ({
   name,
   onChange
@@ -82,14 +77,14 @@ const FileInput = ({
 
 const SheduleTable = ({
   shedule,
-  cities,
 
   setIsModalOpen,
   setModalProps
 }) => {
-
+  const { cities } = useStore(globalStore)
   const dataSource = shedule.map((item, ix) => {
-    const daysTitle = {}
+    const daysTitle = []
+
     const cityname = cities.find(city => item.cityid == city.cityid)
 
     item.days && item.days.forEach((day) => {
@@ -136,6 +131,7 @@ const SheduleTable = ({
       bordered={true}
       rowClassName={st.row}
       style={{ height: '100%' }}
+      pagination={{ showSizeChanger: true }}
       scroll={{ x: true }}
       onRow={(row) => ({
         onDoubleClick: () => {
@@ -150,14 +146,13 @@ const SheduleTable = ({
 const ChangeSheduleModal = ({
   isModalOpen,
   modalProps = {},
-  cities,
-  yls,
 
   changeIsOpenModal,
   onAddShedule,
   setModalProps,
   onChangeShedule
 }) => {
+  const { cities, yls } = useStore(globalStore)
   const { control, getValues, reset } = useForm();
   const [ days, setDays ] = useState([])
 
@@ -307,12 +302,11 @@ const ChangeSheduleModal = ({
 }
 
 const Shedule = ({
-  cities,
-  yls,
   loaderState,
   setLoaderState
 }) => {
   const [shedule, setShedule] = useState([])
+  const { cities, yls } = useStore(globalStore)
 
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [modalProps, setModalProps] = useState(null)
@@ -329,7 +323,7 @@ const Shedule = ({
   }
 
   useEffect(() => {
-    api.get('/shedule/findall').then((res) => {
+    api.get(urls.shedule).then((res) => {
       setShedule(handleShedule(res.data))
     })
   }, [])
@@ -352,29 +346,42 @@ const Shedule = ({
     })
   }
 
-  const onSendExcelFile = (json) => {
+  const onSendExcelFile = async (json) => {
     setLoaderState(true)
 
-    const promises = json.rows.map(item => {
-      return new Promise(((resolve, reject) => {
-        api.post('/shedule/import', item)
+    const promisesArr = json.rows.map((item, ix) => () => {
+      const pr = new Promise(((resolve, reject) => {
+        api.post(urls.importExcel, item)
           .then(response => {
             setShedule(prev => ([...prev, response.data]))
             resolve(response)
           })
-          .catch(error => reject(error))
+          .catch(error => {
+            reject(error)
+          })
       }))
+
+      return pr;
     })
 
-    Promise.all(promises)
-      .then(() => {
-        setLoaderState(false);
-        notification.open({ message: 'Файлы успешно загружены' });
+    async function runPromisesInSequence(promises) {
+      for (let p of promises) {
+        try{
+          await p();
+        }catch(err){
+          notification.error({ message: `Файл не был загружен` });
+        }
+      }
+
+      return new Promise((resolve) => {
+        resolve();
       })
-      .catch((err) => {
-        setLoaderState(false);
-        notification.error({ message: 'Некоторые файлы не были загружены' });
-      })
+    }
+
+    runPromisesInSequence(promisesArr).then(() => {
+      setLoaderState(false);
+      notification.open({ message: 'Файлы успешно загружены' });
+    })
   }
 
   const changeIsOpenModal = () => {

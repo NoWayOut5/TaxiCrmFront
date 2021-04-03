@@ -1,13 +1,19 @@
-import React from 'react';
+import React, { createContext } from 'react'
 import ReactDOM from 'react-dom';
+// import { Provider } from 'mobx-react'
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+
 import 'antd/dist/antd.css';
 import './styles/index.scss';
 
+// const Context = createContext(stores)
+
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    {/*<Provider>*/}
+      <App />
+    {/*</Provider>*/}
   </React.StrictMode>,
   document.getElementById('root')
 );

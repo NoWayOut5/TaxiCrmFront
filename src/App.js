@@ -1,63 +1,74 @@
 import React, { useEffect, useState } from "react";
+import { observer } from 'mobx-react'
 import { Tabs } from 'antd';
 import api, { urls } from 'api';
+import { useStore } from "effector-react";
+import globalStore, { getCities, getYls } from "./stores";
+import authStore, { logoutUser } from "./stores/auth";
 
+import {
+  Button
+} from 'antd'
 import UsersPage from './Pages/Users'
 import Calls from './Pages/Calls'
 import Reports from "./Pages/Reports";
 import Shedule from "./Pages/Shedule";
-
-import st from './styles/app.module.scss'
+import Auth from './Pages/Auth'
 import Loader from "./Components/Loader";
 
-function App() {
-  const [cities, setSities] = useState([])
-  const [yls, setYls] = useState([])
+import st from './styles/app.module.scss'
+
+
+const App = observer((props) => {
   const [loaderState, setLoaderState] = useState();
+  const { user } = useStore(authStore)
 
   useEffect(() => {
-    api.get(urls.cities).then((res) => {
-      const resData = res.data.map(item => ({ ...item, itemId: item.cityid }))
-      setSities(resData)
-    })
-    api.get(urls.getYl).then(res => {
-      const resData = res.data.map(item => ({ ...item, itemId: item.contractorid }))
-      setYls(resData)
-    })
-  }, [])
+    if(user.auth){
+      getCities();
+      getYls();
+    }
+  }, [user.auth])
 
   const { TabPane } = Tabs;
 
+  if(!user.auth){
+    return <Auth />
+  }
+
   return (
     <div className={st.tabs}>
-      <Loader
-        start={loaderState}
-        position="top"
-      />
-      <Tabs
-        defaultActiveKey="2"
-        type="card"
-      >
-        <TabPane tab="Звонки" key="1">
-          В разработке
-        </TabPane>
-        <TabPane tab="Расписание" key="2">
-          <Shedule
-            cities={cities}
-            yls={yls}
-            setLoaderState={setLoaderState}
-            loaderState={loaderState}
-          />
-        </TabPane>
-        <TabPane tab="Отчеты" key="3">
-          В разработке
-        </TabPane>
-        <TabPane tab="Пользователи" key="4">
-          <UsersPage/>
-        </TabPane>
-      </Tabs>
+      <div>
+        <Loader
+          start={loaderState}
+          position="top"
+        />
+        <Tabs
+          defaultActiveKey="1"
+          type="card"
+          tabBarExtraContent={{
+            right: <Button onClick={logoutUser}>Выход</Button>
+          }}
+        >
+          <TabPane tab="Звонки" key="1">
+            <Calls />
+          </TabPane>
+          <TabPane tab="Расписание" key="2">
+            <Shedule
+              setLoaderState={setLoaderState}
+              loaderState={loaderState}
+            />
+          </TabPane>
+          <TabPane tab="Отчеты" key="3">
+            Content of Tab Pane 3
+          </TabPane>
+          <TabPane tab="Пользователи" key="4">
+            <UsersPage />
+          </TabPane>
+        </Tabs>
+      </div>
     </div>
   )
-}
+})
 
 export default App;

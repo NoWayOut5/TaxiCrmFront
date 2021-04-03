@@ -15,8 +15,14 @@
 .modal > div{
   display: block;
   margin-left: 0;
+  //margin-bottom: 4px;
 }
 
 .tableButton{
   margin-right: 8px;
+}
+
+.select{
+  display: block !important;
+  //width: 120px;
 }

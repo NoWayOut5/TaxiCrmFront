@@ -24,28 +24,27 @@ userid: 1
 
 const FormCheckbox = (props) => (
   <div>
-    <Checkbox {...props} />
+    <Checkbox {...props} className={st.checkbox} />
   </div>
 )
 
 const UserFormModal = ({
   open,
   modalProps = {},
+  yls,
 
   onAddUser,
   onChangeUser,
   changeModal,
 }) => {
-  const { register, getValues, reset, control } = useForm({
+  const { register, getValues, reset, control, setValue } = useForm({
     defaultValues: {
-      enabled: '1',
       ...modalProps
     }
   });
   const { Option } = Select;
 
   const onOk = () => {
-    console.log(modalProps)
     if (modalProps.userid) {
       onChangeUser(modalProps.userid, getValues())
     } else {
@@ -53,16 +52,22 @@ const UserFormModal = ({
     }
   }
 
+  function changeSelect(value) {
+    setValue('enabled', value)
+  }
+
   useEffect(() => {
     register('name')
     register('login')
     register('password')
     register('enabled')
-  }, [])
+  }, [register])
 
   useEffect(() => {
     reset(modalProps)
   }, [modalProps, reset])
+
+  console.log(modalProps, modalProps.contractorid, 'getValues().enabled')
 
   return (
     <Modal
@@ -72,77 +77,74 @@ const UserFormModal = ({
       className={st.modal}
       title={true ? "Добавление пользователя" : "Изменение пользователя"}
     >
-
       <Controller
         as={<Input/>}
         name="name"
-        // onChange={onChange}
         placeholder="Имя"
         control={control}
       />
       <Controller
         as={<Input/>}
         name="login"
-        // onChange={onChange}
         placeholder="Логин"
         control={control}
       />
       <Controller
         as={<Input/>}
         placeholder="Пароль"
-        // onChange={onChange}
         name="password"
         control={control}
       />
-      {/*<Input*/}
-      {/*  name="name"*/}
-      {/*  ref={register}*/}
-      {/*  placeholder="Имя"*/}
-      {/*  onChange={onChange}*/}
-      {/*/>*/}
-      {/*<Input*/}
-      {/*  name="login"*/}
-      {/*  ref={register}*/}
-      {/*  placeholder="Логин"*/}
-      {/*  onChange={onChange}*/}
-      {/*/>*/}
-      {/*<Input*/}
-      {/*  name="password"*/}
-      {/*  ref={register}*/}
-      {/*  placeholder="Пароль"*/}
-      {/*  onChange={onChange}*/}
-      {/*/>*/}
       <Controller
-        as={
-          <Select style={{ width: 120 }}>
-            <Option value="0">Заблокирован</Option>
-            <Option value="1">Активен</Option>
+        render={({ onChange, onBlur, value, name, ref }) => (
+          <Select
+            onChange={onChange}
+            onBlur={onBlur}
+            value={yls[modalProps.contractorid] && yls[modalProps.contractorid].name}
+            name={name}
+            ref={ref}
+            defaultValue="Юл (выбираем из справочника юл)"
+            className={st.select}
+          >
+            {yls && yls.map(item => (
+              <Option key={item.contractorid} value={item.contactorid}>
+                {item.name}
+              </Option>
+            ))}
           </Select>
-        }
-        defaultValue="Активен"
-        name="enabled"
-        // onChange={onChangeSelect}
+        )}
+        name="contractorid"
         control={control}
       />
-      {/*<Select*/}
-      {/*  defaultValue="1"*/}
-      {/*  name="enabled"*/}
-      {/*  onChange={onChangeSelect}*/}
-      {/*  style={{ width: 120 }}*/}
-      {/*>*/}
-      {/*  <Option value="0">Заблокирован</Option>*/}
-      {/*  <Option value="1">Активен</Option>*/}
-      {/*</Select>*/}
-      <FormCheckbox className={st.checkbox}>
+      <Controller
+        render={({ onChange, onBlur, value, name, ref }) => {
+          return (
+            <Select
+              onChange={onChange}
+              onBlur={onBlur}
+              value={value == '0' ? 'Заблокирован' : 'Активен'}
+              name={name}
+              ref={ref}
+              defaultValue="Активен"
+            >
+              <Option value="0">Заблокирован</Option>
+              <Option value="1">Активен</Option>
+            </Select>
+          )
+        }}
+        name="enabled"
+        control={control}
+      />
+      <FormCheckbox>
         Роль администратор системный
       </FormCheckbox>
-      <FormCheckbox className={st.checkbox}>
+      <FormCheckbox>
         Роль работа со звонками
       </FormCheckbox>
-      <FormCheckbox className={st.checkbox}>
+      <FormCheckbox>
         Роль администратор расписания
       </FormCheckbox>
-      <FormCheckbox className={st.checkbox}>
+      <FormCheckbox>
         Роль просмотр счетов
       </FormCheckbox>
     </Modal>
@@ -152,18 +154,21 @@ const UserFormModal = ({
 const Table2 = ({
   users,
   changeModalState,
+  setModalState,
   onDeleteUser
 }) => {
   const dataSource = users.map(item => ({ ...item, change: item.userid }))
 
   const changeUser = (userId) => {
     const selectedUser = users.find(item => item.userid == userId)
-    changeModalState(selectedUser)
+    console.log(selectedUser, 'selectedUser')
+    // changeModalState(selectedUser)
+    setModalState({ isOpen: true, modalProps: selectedUser })
   }
 
   const columns = [
     {
-      title: 'Имя',
+      title: 'Имя(ЮЛ)',
       dataIndex: 'name',
       key: 'name',
     },
@@ -223,6 +228,7 @@ const Table2 = ({
 const Users = (props) => {
   const [users, setUsers] = useState([])
   const [modalState, setModalState] = useState({ isOpen: false, modalProps: {} })
+  const { yls } = props;
 
   const onAddUser = (values) => {
     api.post(urls.saveUser, values).then(res => {
@@ -273,22 +279,24 @@ const Users = (props) => {
       <Table2
         users={users}
         changeModalState={changeModalState}
+        setModalState={setModalState}
         onDeleteUser={onDeleteUser}
       />
       <Button
         type="primary"
         onClick={changeModalState}
       >
-        Добавить
+        Добавить пользователя
       </Button>
       {modalState.isOpen &&
-      <UserFormModal
-        changeModal={setModalState}
-        open={modalState.isOpen}
-        modalProps={modalState.modalProps}
-        onAddUser={onAddUser}
-        onChangeUser={onChangeUser}
-      />
+        <UserFormModal
+          changeModal={setModalState}
+          open={modalState.isOpen}
+          modalProps={modalState.modalProps}
+          onAddUser={onAddUser}
+          onChangeUser={onChangeUser}
+          yls={yls}
+        />
       }
     </div>
   )

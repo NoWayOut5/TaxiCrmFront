@@ -1,7 +1,71 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react'
+import api, { urls } from 'api';
+import { useStore } from 'effector-react'
+import callsStore, {
+  getCalls,
+  getCallsList,
+  getCallsInWork,
+  takeInOrder
+} from "../../stores/call";
+import globalStore from '../../stores'
 
-const Calls = (props) => (
-  <div></div>
-);
+import { Controller, useForm } from 'react-hook-form'
+import {
+  Button, Input, Modal, Select,
+  Table,
+} from 'antd'
+
+import CallsTable from './CallsTable'
+import CallsInWorkTable from './CallsInWorkTable'
+import CallsModal from './CallsModal'
+
+import st from "../Users/index.module.scss";
+
+const Calls = () => {
+  const [isOpenModal, setIsOpenModal] = React.useState()
+  const [changedRecordId, setChangedRecordId] = React.useState()
+
+  const { calls, callsInWork } = useStore(callsStore)
+  const { yls, cities } = useStore(globalStore)
+
+  const openModal = (recordId) => {
+    setIsOpenModal(true)
+    setChangedRecordId(recordId)
+  }
+
+  const closeModal = () => {
+    setIsOpenModal(false)
+    setChangedRecordId(null)
+  }
+
+  useEffect(() => {
+    getCallsList();
+    getCallsInWork();
+
+    const interval = setInterval(() => {
+      getCallsList();
+      getCallsInWork();
+    }, 60000)
+
+    return () => clearInterval(interval)
+  }, [])
+
+  return (
+    <div>
+      <CallsTable
+        data={calls}
+      />
+      <CallsInWorkTable
+        data={callsInWork}
+        openModal={openModal}
+      />
+      <CallsModal
+        open={isOpenModal}
+        closeModal={closeModal}
+        changedRecordId={changedRecordId}
+      />
+    </div>
+  )
+}
 
 export default Calls;
