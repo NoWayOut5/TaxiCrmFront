@@ -3,7 +3,7 @@ import { setAuthToken } from '../stores/auth'
 
 const token = localStorage.getItem('access_token')
 const instance = axios.create({
-  baseURL: 'https://taxicrmcommon.herokuapp.com',
+  baseURL: 'https://taxicrmback-preprod.herokuapp.com',
   timeout: 30000,
 });
 
