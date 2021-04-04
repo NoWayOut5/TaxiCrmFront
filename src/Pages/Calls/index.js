@@ -8,6 +8,7 @@ import callsStore, {
   takeInOrder
 } from "../../stores/call";
 import globalStore from '../../stores'
+import { observer } from 'mobx-react'
 
 import { Controller, useForm } from 'react-hook-form'
 import {
@@ -18,10 +19,11 @@ import {
 import CallsTable from './CallsTable'
 import CallsInWorkTable from './CallsInWorkTable'
 import CallsModal from './CallsModal'
+import AddCall from './AddCall'
 
 import st from "../Users/index.module.scss";
 
-const Calls = () => {
+const Calls = observer((props) => {
   const [isOpenModal, setIsOpenModal] = React.useState()
   const [changedRecordId, setChangedRecordId] = React.useState()
 
@@ -52,6 +54,7 @@ const Calls = () => {
 
   return (
     <div>
+      <AddCall />
       <CallsTable
         data={calls}
       />
@@ -66,6 +69,6 @@ const Calls = () => {
       />
     </div>
   )
-}
+})
 
 export default Calls;

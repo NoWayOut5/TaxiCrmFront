@@ -3,8 +3,11 @@ import api, { urls } from 'api';
 
 const globalStore = createStore({
   yls: [],
-  cities: []
+  cities: [],
+  loaderState: false
 })
+
+export const setLoaderState = createEvent('setLoaderState')
 
 export const getCities = createEffect(
   async () => {
@@ -21,6 +24,12 @@ export const getYls = createEffect(
 )
 
 globalStore
+  .on(setLoaderState, (state, payload) => {
+    return {
+      ...state,
+      loaderState: payload
+    }
+  })
   .on(getCities.done, (state, payload) => {
     const cities = payload.result.data.map(item => ({ ...item, itemId: item.cityid }))
 

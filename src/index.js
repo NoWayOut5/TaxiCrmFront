@@ -1,19 +1,20 @@
 import React, { createContext } from 'react'
 import ReactDOM from 'react-dom';
-// import { Provider } from 'mobx-react'
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+// import mobxStores from './mobxStores'
 
 import 'antd/dist/antd.css';
 import './styles/index.scss';
+// import store from './mobxStores'
 
-// const Context = createContext(stores)
+// const GlobalStore = createContext(mobxStores);
 
 ReactDOM.render(
   <React.StrictMode>
-    {/*<Provider>*/}
+    {/*<GlobalStore.Provider>*/}
       <App />
-    {/*</Provider>*/}
+    {/*</GlobalStore.Provider>*/}
   </React.StrictMode>,
   document.getElementById('root')
 );

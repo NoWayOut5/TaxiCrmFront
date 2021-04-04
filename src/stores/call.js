@@ -44,6 +44,13 @@ export const finishOrder = createEffect(
   }
 )
 
+export const addCall = createEffect(
+  async ({ note, phone }) => {
+    const response = await api.post(`${urls.addCall}`, { phone, note })
+    return response;
+  }
+)
+
 callsStore
   .on(getCalls.done, (state, payload) => {
     return {

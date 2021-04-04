@@ -38,35 +38,31 @@ const App = observer((props) => {
 
   return (
     <div className={st.tabs}>
-      <div>
-        <Loader
-          start={loaderState}
-          position="top"
-        />
-        <Tabs
-          defaultActiveKey="1"
-          type="card"
-          tabBarExtraContent={{
-            right: <Button onClick={logoutUser}>Выход</Button>
-          }}
-        >
-          <TabPane tab="Звонки" key="1">
-            <Calls />
-          </TabPane>
-          <TabPane tab="Расписание" key="2">
-            <Shedule
-              setLoaderState={setLoaderState}
-              loaderState={loaderState}
-            />
-          </TabPane>
-          <TabPane tab="Отчеты" key="3">
-            Content of Tab Pane 3
-          </TabPane>
-          <TabPane tab="Пользователи" key="4">
-            <UsersPage />
-          </TabPane>
-        </Tabs>
-      </div>
+      <Loader
+        start={loaderState}
+        position="top"
+      />
+      <Tabs
+        defaultActiveKey="1"
+        type="card"
+        tabBarExtraContent={{
+          right: <Button onClick={logoutUser}>Выход</Button>
+        }}
+        style={{ width: '100%' }}
+      >
+        <TabPane tab="Звонки" key="1">
+          <Calls />
+        </TabPane>
+        <TabPane tab="Расписание" key="2">
+          <Shedule />
+        </TabPane>
+        <TabPane tab="Отчеты" key="3">
+          Content of Tab Pane 3
+        </TabPane>
+        <TabPane tab="Пользователи" key="4">
+          <UsersPage />
+        </TabPane>
+      </Tabs>
     </div>
   )
 })

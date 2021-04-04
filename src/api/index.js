@@ -44,6 +44,7 @@ export const urls = {
   callsBegin: '/call/begin',
   callsInWorkList: '/call/inworklist',
   callsFinishOrder: '/call/end',
+  addCall: '/call/save',
 
   login: '/auth/login',
   logout: '/auth/logout'

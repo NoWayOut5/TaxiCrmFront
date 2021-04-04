@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import api, { urls } from 'api';
 import { useForm, Controller } from "react-hook-form";
+import { useStore } from 'effector-react'
+import globalStore from '../../stores'
+
 import {
   Checkbox,
   Select,
@@ -31,7 +34,6 @@ const FormCheckbox = (props) => (
 const UserFormModal = ({
   open,
   modalProps = {},
-  yls,
 
   onAddUser,
   onChangeUser,
@@ -42,6 +44,7 @@ const UserFormModal = ({
       ...modalProps
     }
   });
+  const { yls, cities } = useStore(globalStore)
   const { Option } = Select;
 
   const onOk = () => {
@@ -66,8 +69,6 @@ const UserFormModal = ({
   useEffect(() => {
     reset(modalProps)
   }, [modalProps, reset])
-
-  console.log(modalProps, modalProps.contractorid, 'getValues().enabled')
 
   return (
     <Modal
