@@ -1,6 +1,8 @@
 import { createStore, createEvent, createEffect } from 'effector';
 import api, { urls } from 'api';
 
+import { setCitiesNames } from './shedule'
+
 const globalStore = createStore({
   yls: [],
   cities: [],
@@ -45,5 +47,9 @@ globalStore
       yls
     }
   })
+
+// getCities.done.watch((payload) => {
+//   setCitiesNames(payload.result.data)
+// })
 
 export default globalStore;

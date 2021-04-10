@@ -2,6 +2,8 @@ import React from 'react'
 import { takeInOrder } from '../../stores/call'
 import { Table, Button } from 'antd'
 
+import st from './index.module.scss'
+
 const CallsTable = ({
   data,
 }) => {
@@ -44,12 +46,15 @@ const CallsTable = ({
   ]
 
   return (
-    <Table
-      columns={columns}
-      size="middle"
-      pagination={{ showSizeChanger: true }}
-      dataSource={dataSource}
-    />
+    <div className={st.calls}>
+      <Table
+        columns={columns}
+        size="small"
+        pagination={{ showSizeChanger: true }}
+        dataSource={dataSource}
+        className={st.callsTable}
+      />
+    </div>
   )
 }
 

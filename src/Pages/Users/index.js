@@ -3,6 +3,10 @@ import api, { urls } from 'api';
 import { useForm, Controller } from "react-hook-form";
 import { useStore } from 'effector-react'
 import globalStore from '../../stores'
+import {
+  getRoles,
+  deleteUser
+} from '../../stores/users'
 
 import {
   Checkbox,
@@ -162,36 +166,20 @@ const Table2 = ({
 
   const changeUser = (userId) => {
     const selectedUser = users.find(item => item.userid == userId)
-    console.log(selectedUser, 'selectedUser')
-    // changeModalState(selectedUser)
     setModalState({ isOpen: true, modalProps: selectedUser })
   }
 
   const columns = [
-    {
-      title: 'Имя(ЮЛ)',
-      dataIndex: 'name',
-      key: 'name',
-    },
-    {
-      title: 'Логин',
-      dataIndex: 'login',
-      key: 'login',
-    },
-    {
-      title: 'Пароль',
-      dataIndex: 'password',
-      key: 'password',
-    },
-    {
-      title: 'Роль',
-      dataIndex: 'role',
-      key: 'role',
-    },
+    { title: 'Имя(ЮЛ)', dataIndex: 'name' },
+    { title: 'Логин', dataIndex: 'login' },
+    { title: 'Пароль', dataIndex: 'password' },
+    { title: 'Роль', dataIndex: 'role' },
     {
       title: 'Статус',
       dataIndex: 'enabled',
-      key: 'enabled',
+      render: (value) => {
+        return value == '0' ? 'Заблокирован' : 'Активен'
+      }
     },
     {
       title: '',
@@ -222,6 +210,8 @@ const Table2 = ({
     <Table
       columns={columns}
       dataSource={dataSource}
+      className={st.usersTable}
+      style={{ width: 'auto' }}
     />
   )
 }
@@ -229,7 +219,6 @@ const Table2 = ({
 const Users = (props) => {
   const [users, setUsers] = useState([])
   const [modalState, setModalState] = useState({ isOpen: false, modalProps: {} })
-  const { yls } = props;
 
   const onAddUser = (values) => {
     api.post(urls.saveUser, values).then(res => {
@@ -263,6 +252,7 @@ const Users = (props) => {
     api.get(urls.users).then((res) => {
       setUsers(res.data)
     })
+    getRoles()
   }, [])
 
   const changeModalState = (props) => {
@@ -296,7 +286,6 @@ const Users = (props) => {
           modalProps={modalState.modalProps}
           onAddUser={onAddUser}
           onChangeUser={onChangeUser}
-          yls={yls}
         />
       }
     </div>

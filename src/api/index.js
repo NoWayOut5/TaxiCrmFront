@@ -26,6 +26,7 @@ export const urls = {
   users: '/user/findall',
   saveUser: '/user/save',
   changeUser: '/user',
+  roles: '/userrole/findall',
 
   getContractor: '/shedule/getschedulecontractor',
   getYl: '/contractor/findall',
@@ -34,6 +35,7 @@ export const urls = {
   saveShedule: '/shedule/save',
   changeShedule: '/shedule',
   importExcel: '/shedule/import',
+  closeAllShedule: '/shedule/close_all_by_contractor',
 
   changeDay: '/day/',
   saveDay: '/days/save',
@@ -49,11 +51,5 @@ export const urls = {
   login: '/auth/login',
   logout: '/auth/logout'
 }
-
-// if(process.env.NODE_ENV == 'development'){
-//   Object.keys(urls).forEach((key) => {
-//     urls[key] = '/api' + urls[key]
-//   })
-// }
 
 export default instance;

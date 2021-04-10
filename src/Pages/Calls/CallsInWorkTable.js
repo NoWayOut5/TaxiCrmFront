@@ -42,13 +42,14 @@ const CallsInWorkTable = ({
 
   return (
     <div
-      className={st.callsInWorkTable}
+      className={st.callsInWork}
     >
       <Table
         columns={columns}
         dataSource={dataSource}
         pagination={{ showSizeChanger: true }}
-        size="middle"
+        size="small"
+        className={st.callsInWorkTable}
         onRow={(record) => {
           return {
             onDoubleClick(){

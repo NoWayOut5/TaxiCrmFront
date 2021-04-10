@@ -11,11 +11,13 @@ import callsStore, { addCall } from '../../stores/call';
 import st from './index.module.scss'
 
 const AddCall = (props) => {
-  const { regster, control, getValues } = useForm()
+  const { regster, control, getValues, reset } = useForm()
 
   const onSave = () => {
     // console.log(getValues())
-    addCall(getValues())
+    addCall(getValues()).then(() => {
+      reset({ phone: '', note: '' })
+    })
   }
 
   return (

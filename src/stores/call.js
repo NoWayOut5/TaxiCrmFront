@@ -61,13 +61,14 @@ callsStore
   .on(getCallsList.done, (state, payload) => {
     return {
       ...state,
-      calls: payload.result.data
+      // calls: payload.result.data
     }
   })
   .on(getCallsInWork.done, (state, payload) => {
     return {
       ...state,
-      callsInWork: payload.result.data
+      callsInWork: payload.result.data,
+      calls: payload.result.data,
     }
   })
   .on(takeInOrder.done, (state, payload) => {
@@ -98,6 +99,12 @@ callsStore
     return {
       ...state,
       callsInWork: callsInWork.map(item => item.callid == callid ? {...item, ...payload} : item)
+    }
+  })
+  .on(addCall.done, (state, payload) => {
+    return {
+      ...state,
+      callsInWork: [...state.callsInWork, payload.result.data]
     }
   })
 

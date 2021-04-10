@@ -44,12 +44,12 @@ const Calls = observer((props) => {
     getCallsList();
     getCallsInWork();
 
-    const interval = setInterval(() => {
-      getCallsList();
-      getCallsInWork();
-    }, 60000)
-
-    return () => clearInterval(interval)
+    // const interval = setInterval(() => {
+    //   getCallsList();
+    //   getCallsInWork();
+    // }, 60000)
+    //
+    // return () => clearInterval(interval)
   }, [])
 
   return (
