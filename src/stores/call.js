@@ -19,6 +19,7 @@ export const getCalls = createEffect(
 export const getCallsList = createEffect(
   async () => {
     const response = await api.get(urls.callsList + '300')
+    // const response = await api.get(urls.calls)
     return response;
   }
 )
@@ -61,14 +62,13 @@ callsStore
   .on(getCallsList.done, (state, payload) => {
     return {
       ...state,
-      // calls: payload.result.data
+      calls: payload.result.data
     }
   })
   .on(getCallsInWork.done, (state, payload) => {
     return {
       ...state,
       callsInWork: payload.result.data,
-      calls: payload.result.data,
     }
   })
   .on(takeInOrder.done, (state, payload) => {

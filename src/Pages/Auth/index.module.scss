@@ -7,14 +7,26 @@
 
 .authForm{
   width: 300px;
+  position: relative;
 
   .login{
     margin-bottom: 4px;
+  }
+
+  .error{
+    border: 1px solid red;
+  }
+
+  .errorMessage{
+    position: absolute;
+    bottom: 42px;
+    color: red;
+    font-size: 13px;
   }
 }
 
 .button{
   margin: auto;
   width: 100%;
-  margin-top: 16px;
+  margin-top: 26px;
 }

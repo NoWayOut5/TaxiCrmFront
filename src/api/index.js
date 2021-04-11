@@ -1,7 +1,6 @@
 import axios from "axios";
-import { setAuthToken } from '../stores/auth'
+import { logoutEvent } from '../stores/auth'
 
-const token = localStorage.getItem('access_token')
 const instance = axios.create({
   baseURL: 'https://taxicrmback-preprod.herokuapp.com',
   timeout: 30000,
@@ -19,6 +18,19 @@ instance.interceptors.request.use(
     return Promise.reject(error);
   }
 );
+
+instance.interceptors.response.use(
+  (response) => {
+    return response;
+  },
+  (error) => {
+    if(error.response.status == 403 || error.response.status == 401){
+      localStorage.removeItem('access_token')
+      logoutEvent();
+    }
+    return Promise.reject(error)
+  }
+)
 
 export const urls = {
   cities: '/city/findall',

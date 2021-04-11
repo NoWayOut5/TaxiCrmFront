@@ -155,7 +155,11 @@ const SendExcel = ({
     const dataAfterPromises = []
     setLoaderState(true)
 
-    await closeAll();
+    try{
+      await closeAll();
+    } catch (err){
+      console.log(err)
+    }
 
     const promisesArr = json.rows.map((item, ix) => () => {
 

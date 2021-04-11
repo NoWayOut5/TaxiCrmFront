@@ -5,9 +5,12 @@ import axios from 'axios'
 const globalStore = createStore({
   user: {
     token: localStorage.getItem('access_token'),
-    auth: !!localStorage.getItem('access_token')
+    auth: !!localStorage.getItem('access_token'),
+    message: null
   }
 })
+
+export const logoutEvent = createEvent('logoutEvent')
 
 export const authUser = createEffect(
   async ({ login, password }) => {
@@ -43,6 +46,16 @@ globalStore
       },
     }
   })
+  .on(authUser.fail, (state, payload) => {
+    const { message } = payload.error.response.data
+    return {
+      ...state,
+      user: {
+        ...state.user,
+        message
+      }
+    }
+  })
   .on(logoutUser.done, (state, payload) => {
     localStorage.removeItem('access_token')
 
@@ -51,6 +64,29 @@ globalStore
       user: {
         auth: false,
         token: null
+      }
+    }
+  })
+  .on(logoutUser.fail, (state, payload) => {
+    localStorage.removeItem('access_token')
+    location.href = '/'
+
+    return {
+      ...state,
+      user: {
+        auth: false,
+        token: null,
+        message: null
+      }
+    }
+  })
+  .on(logoutEvent, (state) => {
+    return {
+      ...state,
+      user: {
+        auth: false,
+        token: null,
+        message: null
       }
     }
   })

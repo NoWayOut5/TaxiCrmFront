@@ -43,7 +43,7 @@ const App = observer((props) => {
         position="top"
       />
       <Tabs
-        defaultActiveKey="1"
+        defaultActiveKey="4"
         type="card"
         tabBarExtraContent={{
           right: <Button onClick={logoutUser}>Выход</Button>

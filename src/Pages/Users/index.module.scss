@@ -1,7 +1,6 @@
 .users{
-  //margin: 16px;
-  //border: 1px solid #eee;
   border-radius: 4px;
+  margin-bottom: 32px;
 }
 
 .usersTable{
@@ -31,5 +30,13 @@
 
 .select{
   display: block !important;
-  //width: 120px;
+  margin-bottom: 4px !important;
+}
+
+.input{
+  margin-bottom: 4px !important;
+}
+
+.controlsGroup{
+  margin-bottom: 12px;
 }

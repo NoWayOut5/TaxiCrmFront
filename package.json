@@ -10,6 +10,7 @@
     "@testing-library/user-event": "^12.7.3",
     "antd": "^4.12.3",
     "axios": "^0.21.1",
+    "classnames": "^2.3.1",
     "effector": "^21.8.10",
     "effector-react": "^21.3.1",
     "http-proxy-middleware": "^1.0.6",

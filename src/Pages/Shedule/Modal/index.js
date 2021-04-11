@@ -48,12 +48,12 @@ const ChangeSheduleModal = ({
     {
       label: "Активно с",
       name: "datefrom",
-      defaultValue: moment().format("MM-DD-YYYY")
+      defaultValue: moment().format("YYYY-MM-DD")
     },
     {
       label: "Активно до",
       name: "dateto",
-      defaultValue: moment().set({ 'year': 2099, 'month': 12, 'day': 31 }).format("MM-DD-YYYY")
+      defaultValue: moment().set({ 'year': 2099, 'month': 12, 'day': 31 }).format("YYYY-MM-DD")
     },
   ]
 

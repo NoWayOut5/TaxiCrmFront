@@ -59,20 +59,21 @@ const UserFormModal = ({
     }
   }
 
-  function changeSelect(value) {
-    setValue('enabled', value)
-  }
-
   useEffect(() => {
     register('name')
     register('login')
     register('password')
     register('enabled')
+    register('contractorid')
   }, [register])
 
   useEffect(() => {
     reset(modalProps)
   }, [modalProps, reset])
+
+  useEffect(() => {
+    console.log(getValues())
+  })
 
   return (
     <Modal
@@ -82,64 +83,70 @@ const UserFormModal = ({
       className={st.modal}
       title={true ? "Добавление пользователя" : "Изменение пользователя"}
     >
-      <Controller
-        as={<Input/>}
-        name="name"
-        placeholder="Имя"
-        control={control}
-      />
-      <Controller
-        as={<Input/>}
-        name="login"
-        placeholder="Логин"
-        control={control}
-      />
-      <Controller
-        as={<Input/>}
-        placeholder="Пароль"
-        name="password"
-        control={control}
-      />
-      <Controller
-        render={({ onChange, onBlur, value, name, ref }) => (
-          <Select
-            onChange={onChange}
-            onBlur={onBlur}
-            value={yls[modalProps.contractorid] && yls[modalProps.contractorid].name}
-            name={name}
-            ref={ref}
-            defaultValue="Юл (выбираем из справочника юл)"
-            className={st.select}
-          >
-            {yls && yls.map(item => (
-              <Option key={item.contractorid} value={item.contactorid}>
-                {item.name}
-              </Option>
-            ))}
-          </Select>
-        )}
-        name="contractorid"
-        control={control}
-      />
-      <Controller
-        render={({ onChange, onBlur, value, name, ref }) => {
-          return (
+      <div className={st.controlsGroup}>
+        <Controller
+          as={<Input/>}
+          name="name"
+          placeholder="Имя"
+          control={control}
+          className={st.input}
+        />
+        <Controller
+          as={<Input/>}
+          name="login"
+          placeholder="Логин"
+          control={control}
+          className={st.input}
+        />
+        <Controller
+          as={<Input/>}
+          placeholder="Пароль"
+          name="password"
+          control={control}
+          className={st.input}
+        />
+        <Controller
+          render={({ onChange, onBlur, value }) => (
             <Select
               onChange={onChange}
               onBlur={onBlur}
-              value={value == '0' ? 'Заблокирован' : 'Активен'}
-              name={name}
-              ref={ref}
-              defaultValue="Активен"
+              // value={yls[modalProps.contractorid] && yls[modalProps.contractorid].name}
+              value={value}
+              className={st.select}
+              placeholder="Юл (выбираем из справочника юл)"
             >
-              <Option value="0">Заблокирован</Option>
-              <Option value="1">Активен</Option>
+              {yls && yls.map(item => (
+                <Option
+                  key={item.contractorid}
+                  value={item.contractorid}
+                >
+                  {item.name}
+                </Option>
+              ))}
             </Select>
-          )
-        }}
-        name="enabled"
-        control={control}
-      />
+          )}
+          name="contractorid"
+          control={control}
+        />
+        <Controller
+          render={({ onChange, onBlur, value }) => {
+            return (
+              <Select
+                onChange={onChange}
+                onBlur={onBlur}
+                value={value == '0' ? 'Заблокирован' : 'Активен'}
+                placeholder="Статус"
+              >
+                <Option value="0">Заблокирован</Option>
+                <Option value="1">Активен</Option>
+              </Select>
+            )
+          }}
+          name="enabled"
+          control={control}
+          className={st.input}
+        />
+      </div>
       <FormCheckbox>
         Роль администратор системный
       </FormCheckbox>
