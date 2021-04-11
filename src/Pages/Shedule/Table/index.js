@@ -21,11 +21,11 @@ const SheduleTable = ({
     let time = ''
 
     if(timeIn && !timeOut){
-      time = `Вперед ${timeIn}`
+      time = `${timeIn} | `
     }else if(timeOut && !timeIn){
-      time = `Назад ${timeOut}`
+      time = `      | ${timeOut}`
     }else if(timeIn && timeOut){
-      time = `Вперед ${timeIn} | Назад ${timeOut}`
+      time = `${timeIn} | ${timeOut}`
     }
 
     return {
@@ -43,7 +43,7 @@ const SheduleTable = ({
     { title: 'Город', dataIndex: ["city", "name"] },
     { title: 'ФИО', dataIndex: 'clname' },
     { title: 'Телефон', dataIndex: 'phone' },
-    { title: 'Адресс проживания', dataIndex: 'startingpoint' },
+    { title: 'Адрес проживания', dataIndex: 'startingpoint' },
     { title: 'Способ перевозки', dataIndex: 'transportway' },
     { title: 'Понедельник', dataIndex: ["tableDays", "in", "mon"], render: renderDay("mon") },
     { title: 'Вторник', dataIndex: ["tableDays", "in", "tue"], render: renderDay("tue") },

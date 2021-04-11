@@ -21,10 +21,10 @@ const CallsInWorkTable = ({
     { title: 'ЮЛ', dataIndex: 'contractor_name' },
     { title: 'Фио', dataIndex: 'clname' },
     { title: 'Телефон', dataIndex: 'phone' },
-    { title: 'Адресс отправления', dataIndex: 'startingpoint' },
-    { title: 'Адресс назначения', dataIndex: 'destination' },
-    { title: 'Дата (текущая дата)', dataIndex: 'shedule_day' },
-    { title: 'Время (вперед/назад)', dataIndex: 'shedule_time' },
+    { title: 'Адрес отправления', dataIndex: 'startingpoint' },
+    { title: 'Адрес назначения', dataIndex: 'destination' },
+    { title: 'Дата', dataIndex: 'shedule_day' },
+    { title: 'Время', dataIndex: 'shedule_time' },
     {
       title: '',
       render: (row) => (
