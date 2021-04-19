@@ -52,7 +52,7 @@ const SheduleTable = ({
     { title: 'Город', dataIndex: ["city", "name"] },
     { title: 'ФИО', dataIndex: 'clname' },
     { title: 'Телефон', dataIndex: 'phone' },
-    { title: 'Адресс проживания', dataIndex: 'startingpoint' },
+    { title: 'Адрес проживания', dataIndex: 'startingpoint' },
     { title: 'Способ перевозки', dataIndex: 'transportway' },
     { title: 'Понедельник', dataIndex: ["tableDays", "in", "mon"], render: renderDay("mon") },
     { title: 'Вторник', dataIndex: ["tableDays", "in", "tue"], render: renderDay("tue") },
