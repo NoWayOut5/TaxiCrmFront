@@ -18,9 +18,11 @@ import Loader from "./Components/Loader";
 
 import st from './styles/app.module.scss'
 
+const DEFAULT_TAB = "1"
 
 const App = observer((props) => {
   const [loaderState, setLoaderState] = useState();
+  const [activeTab, setActiveTab] = useState(DEFAULT_TAB);
   const { user } = useStore(authStore)
 
   useEffect(() => {
@@ -43,23 +45,38 @@ const App = observer((props) => {
         position="top"
       />
       <Tabs
-        defaultActiveKey="4"
+        defaultActiveKey={DEFAULT_TAB}
         type="card"
         tabBarExtraContent={{
           right: <Button onClick={logoutUser}>Выход</Button>
         }}
         style={{ width: '100%' }}
+        onChange={(activeTab) => {
+          setActiveTab(activeTab)
+        }}
       >
-        <TabPane tab="Звонки" key="1">
-          <Calls />
+        <TabPane
+          tab="Звонки"
+          key="1"
+        >
+          <Calls isActiveTab={activeTab == "1"} />
         </TabPane>
-        <TabPane tab="Расписание" key="2">
+        <TabPane
+          tab="Расписание"
+          key="2"
+        >
           <Shedule />
         </TabPane>
-        <TabPane tab="Отчеты" key="3">
+        <TabPane
+          tab="Отчеты"
+          key="3"
+        >
           Content of Tab Pane 3
         </TabPane>
-        <TabPane tab="Пользователи" key="4">
+        <TabPane
+          tab="Пользователи"
+          key="4"
+        >
           <UsersPage />
         </TabPane>
       </Tabs>

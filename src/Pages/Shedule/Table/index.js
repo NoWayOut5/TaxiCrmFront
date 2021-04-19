@@ -14,18 +14,27 @@ const SheduleTable = ({
   const { cities } = useStore(globalStore)
   const { shedule, tableShedule } = useStore(sheduleStore)
 
+  const dataTable = tableShedule.map((item, index) => ({
+    ...item,
+    n: index + 1
+  }))
+
   const renderDay = (dataIndex) => (value, row, index) => {
     const timeIn = row.tableDays.in && row.tableDays.in[dataIndex];
     const timeOut = row.tableDays.out && row.tableDays.out[dataIndex];
 
+    if(!timeIn && !timeOut){
+      return <div></div>
+    }
+
     let time = ''
 
     if(timeIn && !timeOut){
-      time = `${timeIn} | `
+      time = `Вперед ${timeIn}`
     }else if(timeOut && !timeIn){
-      time = `      | ${timeOut}`
+      time = `Назад ${timeOut}`
     }else if(timeIn && timeOut){
-      time = `${timeIn} | ${timeOut}`
+      time = `Вперед ${timeIn} | Назад ${timeOut}`
     }
 
     return {
@@ -43,7 +52,7 @@ const SheduleTable = ({
     { title: 'Город', dataIndex: ["city", "name"] },
     { title: 'ФИО', dataIndex: 'clname' },
     { title: 'Телефон', dataIndex: 'phone' },
-    { title: 'Адрес проживания', dataIndex: 'startingpoint' },
+    { title: 'Адресс проживания', dataIndex: 'startingpoint' },
     { title: 'Способ перевозки', dataIndex: 'transportway' },
     { title: 'Понедельник', dataIndex: ["tableDays", "in", "mon"], render: renderDay("mon") },
     { title: 'Вторник', dataIndex: ["tableDays", "in", "tue"], render: renderDay("tue") },
@@ -59,7 +68,7 @@ const SheduleTable = ({
   return (
     <Table
       columns={columns}
-      dataSource={tableShedule}
+      dataSource={dataTable}
       showHeader={true}
       size="middle"
       bordered={true}

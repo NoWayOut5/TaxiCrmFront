@@ -9,7 +9,7 @@ import {
 
 import st from '../index.module.scss'
 import { setLoaderState } from '../../../stores'
-import { addExcelShedule, closeAll } from '../../../stores/shedule'
+import { addExcelShedule, closeAll, getShedule } from '../../../stores/shedule'
 import api, { urls } from '../../../api'
 
 const createDate = (num) => {
@@ -162,13 +162,10 @@ const SendExcel = ({
     }
 
     const promisesArr = json.rows.map((item, ix) => () => {
-
       const pr = new Promise(((resolve, reject) => {
-        // addExcelShedule(item)
-        // resolve()
         api.post(urls.importExcel, item)
           .then(response => {
-            addExcelShedule(response.data)
+            // addExcelShedule(response.data)
             resolve(response)
           })
           .catch(error => {
@@ -194,7 +191,7 @@ const SendExcel = ({
     }
 
     runPromisesInSequence(promisesArr).then(() => {
-      addExcelShedule(dataAfterPromises)
+      getShedule();
       setLoaderState(false);
       notification.open({ message: 'Файлы успешно загружены' });
     })

@@ -24,7 +24,7 @@ instance.interceptors.response.use(
     return response;
   },
   (error) => {
-    if(error.response.status == 403 || error.response.status == 401){
+    if(error.response && (error.response.status == 403 || error.response.status == 401)){
       localStorage.removeItem('access_token')
       logoutEvent();
     }
@@ -38,7 +38,8 @@ export const urls = {
   users: '/user/findall',
   saveUser: '/user/save',
   changeUser: '/user',
-  roles: '/userrole/findall',
+  rolesList: '/role/findall',
+  userRoles: '/userrole/findall',
 
   getContractor: '/shedule/getschedulecontractor',
   getYl: '/contractor/findall',

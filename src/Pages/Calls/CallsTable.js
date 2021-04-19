@@ -20,10 +20,10 @@ const CallsTable = ({
     { title: 'Фио', dataIndex: 'clname' },
     { title: 'Телефон', dataIndex: 'phone' },
     { title: 'Примечание', dataIndex: 'note' },
-    { title: 'Адрес', dataIndex: 'startingpoint' },
-    { title: 'Адрес', dataIndex: 'destination' },
-    { title: 'Дата', dataIndex: 'shedule_day' },
-    { title: 'Время', dataIndex: 'shedule_time' },
+    { title: 'Адресс отправления', dataIndex: 'startingpoint' },
+    { title: 'Адресс назначения', dataIndex: 'destination' },
+    { title: 'Дата (текущая дата)', dataIndex: 'shedule_day' },
+    { title: 'Время (вперед/назад из расписания)', dataIndex: 'shedule_time' },
     {
       title: 'Статус обработки',
       render: (row) => {

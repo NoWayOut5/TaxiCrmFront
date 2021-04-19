@@ -97,8 +97,8 @@ callsStore
   .on(addExcelShedule, (state, payload) => {
     return {
       ...state,
-      shedule: [...state.shedule, ...payload],
-      tableShedule: [...state.shedule, ...payload.map(dayToTable)]
+      shedule: [...state.shedule, payload],
+      tableShedule: [...state.shedule, dayToTable(payload)]
     }
   })
 

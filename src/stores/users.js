@@ -4,7 +4,8 @@ import globalStore from './index'
 
 const callsStore = createStore({
   users: [],
-  tableShedule: []
+  tableShedule: [],
+  rolesNames: []
 })
 
 export const getUsers = createEffect(
@@ -14,30 +15,44 @@ export const getUsers = createEffect(
   }
 )
 
-export const getRoles = createEffect(
+export const getUserRoles = createEffect(
   async () => {
-    const response = await api.get(urls.roles)
+    const response = await api.get(urls.userRoles)
+    return response;
+  }
+)
+
+export const getRolesList = createEffect(
+  async () => {
+    const response = await api.get(urls.rolesList)
+    return response;
+  }
+)
+
+export const saveUserRoles = createEffect(
+  async (values) => {
+    const response = await api.post(`/userrole/saveuserroles`, values)
     return response;
   }
 )
 
 export const addUser = createEffect(
   async (values) => {
-    const response = await api.post(urls.saveShedule, values)
+    const response = await api.post(urls.saveUser, values)
     return response;
   }
 )
 
 export const deleteUser = createEffect(
-  async (values) => {
-    const response = await api.post(urls.saveShedule, values)
+  async (userId) => {
+    const response = await api.delete(`/user/${userId}`)
     return response;
   }
 )
 
 export const changeUser = createEffect(
-  async (values) => {
-    const response = await api.post(urls.saveShedule, values)
+  async ({ userId, values }) => {
+    const response = await api.put(`${urls.changeUser}/${userId}`, values)
     return response;
   }
 )
@@ -49,16 +64,17 @@ callsStore
       users: payload.result.data
     }
   })
-  .on(getRoles.done, (state, payload) => {
-    return {
-      ...state,
-      usersRoles: payload.result.payload
-    }
-  })
   .on(changeUser.done, (state, payload) => {
+    const { users } = state;
+    const { userId, values } = payload.params;
+
+    const ix = users.findIndex(item => item.userid == userId)
+    const newUsers = [...users]
+    newUsers[ix] = values
+
     return {
       ...state,
-      usersRoles: payload.result.data
+      users: newUsers
     }
   })
   .on(addUser.done, (state, payload) => {
@@ -68,11 +84,35 @@ callsStore
     }
   })
   .on(deleteUser.done, (state, payload) => {
-    const { userId } = payload.params
+    const userId = payload.params
+
     return {
       ...state,
       users: state.users.filter(item => item.userid != userId)
     }
   })
+
+  .on(getRolesList.done, (state, payload) => {
+    return {
+      ...state,
+      rolesNames: payload.result.data
+    }
+  })
+  .on(getUserRoles.done, (state, payload) => {
+    const { users, rolesNames } = state;
+
+    return {
+      ...state,
+      users: users.map(item => {
+        const roleItem = rolesNames.find(role => role.userid == item.userId)
+        return {
+          ...item,
+          role: roleItem
+        }
+      })
+
+    }
+  })
+
 
 export default callsStore;

@@ -23,9 +23,12 @@ import AddCall from './AddCall'
 
 import st from "../Users/index.module.scss";
 
-const Calls = observer((props) => {
+const Calls = ({
+  isActiveTab
+}) => {
   const [isOpenModal, setIsOpenModal] = React.useState()
   const [changedRecordId, setChangedRecordId] = React.useState()
+  const [isMounted, setIsMounted] = React.useState(null)
 
   const { calls, callsInWork } = useStore(callsStore)
   const { yls, cities } = useStore(globalStore)
@@ -41,16 +44,18 @@ const Calls = observer((props) => {
   }
 
   useEffect(() => {
-    getCallsList();
-    getCallsInWork();
+    if(isActiveTab){
+      getCallsList();
+      getCallsInWork();
 
-    // const interval = setInterval(() => {
-    //   getCallsList();
-    //   getCallsInWork();
-    // }, 60000)
-    //
-    // return () => clearInterval(interval)
-  }, [])
+      // const interval = setInterval(() => {
+      //   getCallsList();
+      //   getCallsInWork();
+      // }, 60000)
+      //
+      // return () => clearInterval(interval)
+    }
+  }, [isActiveTab])
 
   return (
     <div>
@@ -69,6 +74,6 @@ const Calls = observer((props) => {
       />
     </div>
   )
-})
+}
 
 export default Calls;
