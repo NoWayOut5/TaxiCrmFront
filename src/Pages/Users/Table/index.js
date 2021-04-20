@@ -1,6 +1,7 @@
 import React from 'react'
 import { Button, Table } from 'antd'
 import st from '../index.module.scss'
+import { logoutUser } from '../../../stores/auth'
 
 const UsersTable = ({
   users,
@@ -8,7 +9,11 @@ const UsersTable = ({
   setModalState,
   onDeleteUser
 }) => {
-  const dataSource = users.map(item => ({ ...item, change: item.userid }))
+  const dataSource = users.map((item, ix) => ({
+    ...item,
+    change: item.userid,
+    ix
+  }))
 
   const changeUser = (userId) => {
     const selectedUser = users.find(item => item.userid == userId)
@@ -58,6 +63,7 @@ const UsersTable = ({
       dataSource={dataSource}
       className={st.usersTable}
       style={{ width: 'auto' }}
+      rowKey="ix"
     />
   )
 }

@@ -57,7 +57,10 @@ const CallsModal = ({
       style={{ top: 10, bottom: 10 }}
     >
       {items.map(({ name, label }, ix) => (
-        <FormItem label={label}>
+        <FormItem
+          label={label}
+          key={ix}
+        >
           <Controller
             as={<Input />}
             name={name}

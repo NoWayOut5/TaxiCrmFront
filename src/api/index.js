@@ -1,5 +1,6 @@
 import axios from "axios";
 import { logoutEvent } from '../stores/auth'
+import { notification } from 'antd'
 
 const instance = axios.create({
   baseURL: 'https://taxicrmback-preprod.herokuapp.com',
@@ -27,6 +28,12 @@ instance.interceptors.response.use(
     if(error.response && (error.response.status == 403 || error.response.status == 401)){
       localStorage.removeItem('access_token')
       logoutEvent();
+    }else if(error.response && error.response.data){
+      try{
+        const { request: { responseURL }, data: { error: errorText, status } } = error.response;
+
+        notification.error({ message: `${status}  ${responseURL}`})
+      }catch {}
     }
     return Promise.reject(error)
   }

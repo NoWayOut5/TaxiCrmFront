@@ -22,8 +22,8 @@ const UserFormModal = ({
   onChangeUser,
   changeModal,
 }) => {
-  const [roles, setRoles] = useState(modalProps.roles ? modalProps.roles : []);
-  const { register, getValues, reset, control, setValue } = useForm({
+  const [ roles, setRoles ] = useState(modalProps.userRolesNames ? modalProps.userRolesNames : []);
+  const { register, getValues, reset, control, setValue, errors } = useForm({
     defaultValues: {
       ...modalProps
     }
@@ -33,16 +33,19 @@ const UserFormModal = ({
   const { Option } = Select;
 
   const onOk = () => {
+    const values = getValues()
+    !values.password && (values.password = "")
+
     if (modalProps.userid) {
-      onChangeUser(modalProps.userid, getValues())
+      onChangeUser(modalProps.userid, values)
       saveUserRoles({
-        ...getValues(),
+        ...values,
         roles: roles.map(item => ({ sysname: item }))
       })
     } else {
-      onAddUser(getValues()).then((res) => {
+      onAddUser({ values, roles }).then((res) => {
         saveUserRoles({
-          ...getValues(),
+          ...res.data,
           roles: roles.map(item => ({ sysname: item }))
         })
       })
@@ -139,29 +142,19 @@ const UserFormModal = ({
           name="enabled"
           control={control}
           className={st.input}
+          defaultValue="1"
         />
       </div>
-      {rolesNames.map(item => (
+      {rolesNames.map((item, ix) => (
         <FormCheckbox
           name={item.sysname}
           onChange={onChangeCheckbox(item.sysname)}
           checked={roles.find(r => r == item.sysname)}
+          key={ix}
         >
           {capitalizeFirstLetter(item.name)}
         </FormCheckbox>
       ))}
-      {/*<FormCheckbox>*/}
-      {/*  Роль администратор системный*/}
-      {/*</FormCheckbox>*/}
-      {/*<FormCheckbox>*/}
-      {/*  Роль работа со звонками*/}
-      {/*</FormCheckbox>*/}
-      {/*<FormCheckbox>*/}
-      {/*  Роль администратор расписания*/}
-      {/*</FormCheckbox>*/}
-      {/*<FormCheckbox>*/}
-      {/*  Роль просмотр счетов*/}
-      {/*</FormCheckbox>*/}
     </Modal>
   )
 }

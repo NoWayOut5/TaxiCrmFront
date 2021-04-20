@@ -37,7 +37,7 @@ export const saveUserRoles = createEffect(
 )
 
 export const addUser = createEffect(
-  async (values) => {
+  async ({ values }) => {
     const response = await api.post(urls.saveUser, values)
     return response;
   }
@@ -78,9 +78,13 @@ callsStore
     }
   })
   .on(addUser.done, (state, payload) => {
+    const newUser = {
+      ...payload.result.data,
+      userRolesNames: payload.params.roles
+    }
     return {
       ...state,
-      users: [...state.users, payload.result.data]
+      users: [ ...state.users, newUser ]
     }
   })
   .on(deleteUser.done, (state, payload) => {
@@ -100,14 +104,22 @@ callsStore
   })
   .on(getUserRoles.done, (state, payload) => {
     const { users, rolesNames } = state;
+    const { result: { data } } = payload
+
+    const roles = [];
 
     return {
       ...state,
       users: users.map(item => {
-        const roleItem = rolesNames.find(role => role.userid == item.userId)
+        const userRoles = data.filter(rolesItem => rolesItem.userid == item.userid);
+        const userRolesNames = userRoles.map(userRole => {
+          const sel = rolesNames.find(name => userRole.roleid == name.roleid)
+          return sel.sysname
+        })
+
         return {
           ...item,
-          role: roleItem
+          userRolesNames
         }
       })
 
