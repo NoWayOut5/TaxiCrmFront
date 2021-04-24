@@ -27,6 +27,7 @@ instance.interceptors.response.use(
   (error) => {
     if(error.response && (error.response.status == 403 || error.response.status == 401)){
       localStorage.removeItem('access_token')
+      localStorage.removeItem('roles')
       logoutEvent();
     }else if(error.response && error.response.data){
       try{

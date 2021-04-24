@@ -6,7 +6,8 @@ const globalStore = createStore({
   user: {
     token: localStorage.getItem('access_token'),
     auth: !!localStorage.getItem('access_token'),
-    message: null
+    message: null,
+    roles: localStorage.getItem('roles') ? JSON.parse(localStorage.getItem('roles')) : []
   }
 })
 
@@ -35,14 +36,17 @@ export const getYls = createEffect(
 
 globalStore
   .on(authUser.done, (state, payload) => {
-    const { token } = payload.result.data
+    const { token, roles } = payload.result.data
     localStorage.setItem('access_token', token)
+    localStorage.setItem('roles', JSON.stringify(roles))
 
     return {
       ...state,
       user: {
-        auth: true,
-        token
+        ...state.user,
+        token,
+        roles,
+        auth: true
       },
     }
   })
@@ -58,25 +62,31 @@ globalStore
   })
   .on(logoutUser.done, (state, payload) => {
     localStorage.removeItem('access_token')
+    localStorage.removeItem('roles')
 
     return {
       ...state,
       user: {
+        ...state.user,
         auth: false,
-        token: null
+        token: null,
+        roles: []
       }
     }
   })
   .on(logoutUser.fail, (state, payload) => {
     localStorage.removeItem('access_token')
+    localStorage.removeItem('roles')
     location.href = '/'
 
     return {
       ...state,
       user: {
+        ...state.user,
         auth: false,
         token: null,
-        message: null
+        message: null,
+        roles: []
       }
     }
   })
@@ -84,9 +94,11 @@ globalStore
     return {
       ...state,
       user: {
+        ...state.user,
         auth: false,
         token: null,
-        message: null
+        message: null,
+        roles: []
       }
     }
   })
