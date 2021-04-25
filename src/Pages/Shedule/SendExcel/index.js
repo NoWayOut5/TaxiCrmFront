@@ -53,7 +53,7 @@ const schema = {
     prop: 'city',
     type: String
   },
-  'ФИО       пациента': {
+  'ФИО пациента': {
     prop: 'clname',
     type: String,
   },
@@ -87,10 +87,6 @@ const schema = {
   },
   'Заказчик': {
     prop: 'customer',
-    type: String,
-  },
-  'Наименование центра': {
-    prop: 'destname',
     type: String,
   },
   'Наименование центра': {
@@ -154,11 +150,11 @@ const schema = {
     prop: 'sun_out',
     type: createDate,
   },
-  "Дата действия с": {
+  "Дата начала действия": {
     prop: 'date_from',
     type: createYearStr,
   },
-  "Дата действия до": {
+  "Дата окончания действия (исключая)": {
     prop: 'date_to',
     type: createYearStr,
   },
