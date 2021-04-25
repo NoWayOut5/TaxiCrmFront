@@ -32,22 +32,21 @@ const UserFormModal = ({
   const { rolesNames } = useStore(userStore)
   const { Option } = Select;
 
-  const onOk = () => {
+  const onOk = async () => {
     const values = getValues()
     !values.password && (values.password = "")
 
     if (modalProps.userid) {
-      onChangeUser(modalProps.userid, values)
+      await onChangeUser(modalProps.userid, values)
       saveUserRoles({
         ...values,
         roles: roles.map(item => ({ sysname: item }))
       })
     } else {
-      onAddUser({ values, roles }).then((res) => {
-        saveUserRoles({
-          ...res.data,
-          roles: roles.map(item => ({ sysname: item }))
-        })
+      const res = await onAddUser({ values, roles })
+      saveUserRoles({
+        ...res.data,
+        roles: roles.map(item => ({ sysname: item }))
       })
     }
   }

@@ -18,7 +18,7 @@ import Loader from "./Components/Loader";
 
 import st from './styles/app.module.scss'
 
-const DEFAULT_TAB = "0"
+const DEFAULT_TAB = "4"
 const ROLES = {
   admin: 'ROLE_ADMIN',
   calls: 'ROLE_WORKWITHCALLS',
@@ -26,39 +26,19 @@ const ROLES = {
   reporst: 'ROLE_VIEWREPORTS'
 }
 
-// const ProtectedTab = ({ children, role, renderItem, ...props }) => {
-//   const { user: {roles: userRole} } = useStore(authStore);
-//
-//   console.log(userRole.find(r => r == ROLES.admin))
-//
-//   // if(!userRole.find(r => r == ROLES.admin) || !userRole.find(r => r == role)){
-//   //   return null
-//   // }
-//
-//   return null;
-//
-//   const { TabPane } = Tabs;
-//
-//   return (
-//     <TabPane {...props}>
-//       {children}
-//     </TabPane>
-//   )
-// }
-
 const App = observer((props) => {
   const [loaderState, setLoaderState] = useState();
   const [activeTab, setActiveTab] = useState(DEFAULT_TAB);
   const { user: { auth, roles: userRoles } } = useStore(authStore)
+  const { TabPane } = Tabs;
+  const userIsRepostRole = (userRoles.length == 1 && userRoles.find(r => r == ROLES.reporst))
 
   useEffect(() => {
-    if(auth && !(userRoles.length == 1 && userRoles.find(r => r == ROLES.reporst))){
+    if(auth && !userIsRepostRole){
       getCities();
       getYls();
     }
   }, [auth])
-
-  const { TabPane } = Tabs;
 
   if(!auth){
     return <Auth />
@@ -69,10 +49,12 @@ const App = observer((props) => {
     { title: 'Расписание', role: ROLES.shedule, content: Shedule },
     { title: 'Отчеты', role: ROLES.reporst, content: "Content of Tab Pane 3" },
     { title: 'Пользователи', role: ROLES.admin, content: UsersPage },
-  ]
+  ].filter((tab, key) => {
+    const selectedRole = userRoles.find(userRole => {
+      return userRole == ROLES.admin || userRole == tab.role;
+    })
 
-  const renderedTabs = tabs.filter((tab, key) => {
-    if(userRoles.find(r => r == ROLES.admin) || userRoles.find(r => r == tab.role)){
+    if(selectedRole){
       return tab
     }
   })
@@ -94,39 +76,14 @@ const App = observer((props) => {
           setActiveTab(activeTab)
         }}
       >
-        {renderedTabs.map((item, ix) => (
-          <TabPane tab={item.title} key={ix}>
-            {typeof item.content !== 'string' ? React.createElement(item.content, item.props ? { isActiveTab: activeTab == '1' } : {}) : item.content}
+        {tabs.map((item, ix) => (
+          <TabPane tab={item.title} key={ix + 1}>
+            {typeof item.content !== 'string' ?
+              React.createElement(item.content, item.props && item.props) :
+              item.content
+            }
           </TabPane>
         ))}
-        {/*<ProtectedTab*/}
-        {/*  tab="Звонки"*/}
-        {/*  key="1"*/}
-        {/*  role={ROLES.calls}*/}
-        {/*>*/}
-        {/*  <Calls isActiveTab={activeTab == "1"} />*/}
-        {/*</ProtectedTab>*/}
-        {/*<ProtectedTab*/}
-        {/*  tab="Расписание"*/}
-        {/*  key="2"*/}
-        {/*  role={ROLES.shedule}*/}
-        {/*>*/}
-        {/*  <Shedule />*/}
-        {/*</ProtectedTab>*/}
-        {/*<ProtectedTab*/}
-        {/*  tab="Отчеты"*/}
-        {/*  key="3"*/}
-        {/*  role={ROLES.reporst}*/}
-        {/*>*/}
-        {/*  Content of Tab Pane 3*/}
-        {/*</ProtectedTab>*/}
-        {/*<ProtectedTab*/}
-        {/*  tab="Пользователи"*/}
-        {/*  key="4"*/}
-        {/*  role={ROLES.admin}*/}
-        {/*>*/}
-        {/*  <UsersPage />*/}
-        {/*</ProtectedTab>*/}
       </Tabs>
     </div>
   )

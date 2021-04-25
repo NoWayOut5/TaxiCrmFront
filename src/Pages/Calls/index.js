@@ -33,6 +33,8 @@ const Calls = ({
   const { calls, callsInWork } = useStore(callsStore)
   const { yls, cities } = useStore(globalStore)
 
+  console.log(isActiveTab, 'is')
+
   const openModal = (recordId) => {
     setIsOpenModal(true)
     setChangedRecordId(recordId)
@@ -47,13 +49,20 @@ const Calls = ({
     if(isActiveTab){
       getCallsList();
       getCallsInWork();
+      let interval;
 
-      // const interval = setInterval(() => {
-      //   getCallsList();
-      //   getCallsInWork();
-      // }, 60000)
-      //
-      // return () => clearInterval(interval)
+      if(process.env.NODE_ENV == 'production'){
+        interval = setInterval(() => {
+          getCallsList();
+          getCallsInWork();
+        }, 60000)
+      }
+
+      return () => {
+        if(process.env.NODE_ENV == 'production'){
+          clearInterval(interval)
+        }
+      }
     }
   }, [isActiveTab])
 

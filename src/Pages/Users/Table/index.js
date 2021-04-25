@@ -2,6 +2,8 @@ import React from 'react'
 import { Button, Table } from 'antd'
 import st from '../index.module.scss'
 import { logoutUser } from '../../../stores/auth'
+import globalStore from '../../../stores'
+import { useStore } from 'effector-react'
 
 const UsersTable = ({
   users,
@@ -9,21 +11,29 @@ const UsersTable = ({
   setModalState,
   onDeleteUser
 }) => {
-  const dataSource = users.map((item, ix) => ({
-    ...item,
-    change: item.userid,
-    ix
-  }))
+  const { yls } = useStore(globalStore);
+
+  const dataSource = users.map((item, ix) => {
+    const contractor = yls.find(yl => yl.contractorid == item.contractorid)
+    return {
+      ...item,
+      change: item.userid,
+      contractor: contractor ? contractor.name : '',
+      ix
+    }
+  })
 
   const changeUser = (userId) => {
     const selectedUser = users.find(item => item.userid == userId)
     setModalState({ isOpen: true, modalProps: selectedUser })
   }
 
+  console.log(dataSource, 'dataSource')
+
   const columns = [
-    { title: 'Имя(ЮЛ)', dataIndex: 'name' },
+    { title: 'Имя', dataIndex: 'name' },
     { title: 'Логин', dataIndex: 'login' },
-    { title: 'Пароль', dataIndex: 'password' },
+    { title: 'Контрагент', dataIndex: 'contractor'},
     { title: 'Роль', dataIndex: 'role' },
     {
       title: 'Статус',

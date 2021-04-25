@@ -1,6 +1,7 @@
 import React from 'react';
 import readXlsxFile from 'read-excel-file'
 import convertToJson from "read-excel-file/schema"
+import moment from 'moment'
 
 import {
   Button,
@@ -41,6 +42,12 @@ const createDate = (num) => {
   }
 }
 
+const createYearStr = (date) => {
+  if(date instanceof Date){
+    return moment(date).format('YYYY-MM-DD HH:mm:ss')
+  }
+}
+
 const schema = {
   'Город': {
     prop: 'city',
@@ -64,6 +71,10 @@ const schema = {
   },
   'Телефон': {
     prop: 'phone',
+    type: String,
+  },
+  'Класс авто': {
+    prop: 'autoclass',
     type: String,
   },
   'Способ перевозки': {
@@ -136,12 +147,20 @@ const schema = {
     type: createDate,
   },
   "Воскресенье Вперёд": {
-    prop: 'sut_in',
+    prop: 'sun_in',
     type: createDate,
   },
   "Воскресенье Назад": {
-    prop: 'sut_out',
+    prop: 'sun_out',
     type: createDate,
+  },
+  "Дата действия с": {
+    prop: 'date_from',
+    type: createYearStr,
+  },
+  "Дата действия до": {
+    prop: 'date_to',
+    type: createYearStr,
   },
 }
 
@@ -165,7 +184,6 @@ const SendExcel = ({
       const pr = new Promise(((resolve, reject) => {
         api.post(urls.importExcel, item)
           .then(response => {
-            // addExcelShedule(response.data)
             resolve(response)
           })
           .catch(error => {
@@ -181,7 +199,9 @@ const SendExcel = ({
         try{
           await p();
         }catch(err){
-          notification.error({ message: `Файл не был загружен` });
+          // console.log(err.response)
+          notification.error({ message: err.config.data });
+          break;
         }
       }
 
@@ -202,6 +222,7 @@ const SendExcel = ({
       const newRows = rows.map((item, ix) => {
         return ix == 0 ? item.map(headerRow => headerRow.replace(/\r?\n|\r/g, ' ')) : item;
       })
+      // console.log(newRows, 'newrps')
       onSendExcelFile(convertToJson(newRows, schema))
     })
   }
