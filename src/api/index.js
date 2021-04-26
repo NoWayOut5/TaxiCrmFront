@@ -3,7 +3,7 @@ import { logoutEvent } from '../stores/auth'
 import { notification } from 'antd'
 
 const instance = axios.create({
-  baseURL: 'https://taxicrmback-preprod.herokuapp.com',
+  baseURL: 'https://taxicrmback-prod.herokuapp.com',
   timeout: 30000,
 });
 
