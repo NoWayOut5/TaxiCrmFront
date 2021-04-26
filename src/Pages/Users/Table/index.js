@@ -33,7 +33,7 @@ const UsersTable = ({
   const columns = [
     { title: 'Имя', dataIndex: 'name' },
     { title: 'Логин', dataIndex: 'login' },
-    { title: 'Контрагент', dataIndex: 'contractor'},
+   /* { title: 'Контрагент', dataIndex: 'contractor'},*/
     { title: 'Роль', dataIndex: 'role' },
     {
       title: 'Статус',
