@@ -133,11 +133,11 @@ const schema = {
     type: createDate,
   },
   "Воскресенье Вперёд": {
-    prop: 'sut_in',
+    prop: 'sun_in',
     type: createDate,
   },
   "Воскресенье Назад": {
-    prop: 'sut_out',
+    prop: 'sun_out',
     type: createDate,
   },
 }
