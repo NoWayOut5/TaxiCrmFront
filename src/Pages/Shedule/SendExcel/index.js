@@ -53,7 +53,7 @@ const schema = {
     prop: 'city',
     type: String
   },
-  'ФИО пациента': {
+  'ФИО       пациента': {
     prop: 'clname',
     type: String,
   },
@@ -87,6 +87,10 @@ const schema = {
   },
   'Заказчик': {
     prop: 'customer',
+    type: String,
+  },
+  'Наименование центра': {
+    prop: 'destname',
     type: String,
   },
   'Наименование центра': {
@@ -150,11 +154,11 @@ const schema = {
     prop: 'sun_out',
     type: createDate,
   },
-  "Дата начала действия": {
+  "Дата действия с": {
     prop: 'date_from',
     type: createYearStr,
   },
-  "Дата окончания действия (исключая)": {
+  "Дата действия до": {
     prop: 'date_to',
     type: createYearStr,
   },
@@ -173,7 +177,7 @@ const SendExcel = ({
     try{
       await closeAll();
     } catch (err){
-      console.log(err)
+      return;
     }
 
     const promisesArr = json.rows.map((item, ix) => () => {
@@ -191,26 +195,31 @@ const SendExcel = ({
     })
 
     async function runPromisesInSequence(promises) {
+      let isBreak = false
+
       for (let p of promises) {
         try{
           await p();
         }catch(err){
-          // console.log(err.response)
-          notification.error({ message: err.config.data });
+          isBreak = true;
           break;
         }
       }
 
-      return new Promise((resolve) => {
-        resolve();
+      return new Promise((resolve, reject) => {
+        isBreak ? reject() : resolve();
       })
     }
 
-    runPromisesInSequence(promisesArr).then(() => {
-      getShedule();
-      setLoaderState(false);
-      notification.open({ message: 'Файлы успешно загружены' });
-    })
+    runPromisesInSequence(promisesArr)
+      .then(() => {
+        getShedule();
+        setLoaderState(false);
+        notification.open({ message: 'Файлы успешно загружены' });
+      })
+      .catch(err => {
+        console.log(err)
+      })
   }
 
   const onChange = (ev) => {
@@ -218,8 +227,8 @@ const SendExcel = ({
       const newRows = rows.map((item, ix) => {
         return ix == 0 ? item.map(headerRow => headerRow.replace(/\r?\n|\r/g, ' ')) : item;
       })
-      // console.log(newRows, 'newrps')
       onSendExcelFile(convertToJson(newRows, schema))
+      ev.target.value = '';
     })
   }
 

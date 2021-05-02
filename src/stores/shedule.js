@@ -24,7 +24,7 @@ export const addExcelShedule = createEvent('addExcelShedule')
 
 export const getShedule = createEffect(
   async () => {
-    const response = await api.get(urls.shedule)
+    const response = await api.get(urls.sheduleFindByContractor)
     return response;
   }
 )

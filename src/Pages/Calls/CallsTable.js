@@ -8,9 +8,9 @@ const CallsTable = ({
   data,
 }) => {
   const dataSource = data.map((item, ix) => ({
-    'n': ix + 1,
+    ...item,
     table_time: `${item.shedule_day} : ${item.sheduletime}`,
-    ...item
+    'n': ix + 1,
   }))
 
   const columns = [
@@ -27,12 +27,13 @@ const CallsTable = ({
     {
       title: 'Статус обработки',
       render: (row) => {
-        return row.user_in_work ? 'В обработке' : 'Не взят в работу'
+        console.log(row)
+        return row.user_name ? 'В обработке' : 'Не взят в работу'
       }
     },
     {
       title: 'Фио сотрудника',
-      render: ({ sheduleid, dayid, user_in_work }) => {
+      render: ({ sheduleid, dayid, user_name }) => {
         const btn = (
           <Button
             onClick={() => takeInOrder({ sheduleid, dayid })}
@@ -40,7 +41,7 @@ const CallsTable = ({
             Взять в работу
           </Button>
         )
-        return user_in_work ? user_in_work : btn
+        return user_name ? user_name : btn
       }
     },
   ]

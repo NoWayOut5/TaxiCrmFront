@@ -57,6 +57,11 @@ export const changeUser = createEffect(
   }
 )
 
+
+const setRoles = () => {
+
+}
+
 callsStore
   .on(getUsers.done, (state, payload) => {
     return {
@@ -66,11 +71,11 @@ callsStore
   })
   .on(changeUser.done, (state, payload) => {
     const { users } = state;
-    const { userId, values } = payload.params;
+    const { userId, values, roles } = payload.params;
 
     const ix = users.findIndex(item => item.userid == userId)
     const newUsers = [...users]
-    newUsers[ix] = values
+    newUsers[ix] = { ...values, userRolesNames: roles }
 
     return {
       ...state,

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { useStore } from 'effector-react'
 import globalStore from 'stores'
-import userStore, { saveUserRoles } from 'stores/users'
+import userStore, { addUser, changeUser, saveUserRoles } from 'stores/users'
 import capitalizeFirstLetter from 'helpers/capitalizeFirstLetter'
 
 import {
@@ -18,9 +18,7 @@ const UserFormModal = ({
   open,
   modalProps = {},
 
-  onAddUser,
-  onChangeUser,
-  changeModal,
+  setModalState
 }) => {
   const [ roles, setRoles ] = useState(modalProps.userRolesNames ? modalProps.userRolesNames : []);
   const { register, getValues, reset, control, setValue, errors } = useForm({
@@ -32,23 +30,36 @@ const UserFormModal = ({
   const { rolesNames } = useStore(userStore)
   const { Option } = Select;
 
+  // const onAddUser = async (values) => {
+  //   const res = await addUser(values)
+  //   setModalState({ modalProps: {}, isOpen: false })
+  //   return res;
+  // }
+  //
+  // const onChangeUser = async (userId, values) => {
+  //   await changeUser({ userId, values })
+  //   setModalState({ modalProps: {}, isOpen: false })
+  // }
+
   const onOk = async () => {
     const values = getValues()
     !values.password && (values.password = "")
 
     if (modalProps.userid) {
-      await onChangeUser(modalProps.userid, values)
-      saveUserRoles({
+      await changeUser({ userId: modalProps.userid, values, roles })
+      await saveUserRoles({
         ...values,
         roles: roles.map(item => ({ sysname: item }))
       })
     } else {
-      const res = await onAddUser({ values, roles })
-      saveUserRoles({
+      const res = await addUser({ values, roles })
+      await saveUserRoles({
         ...res.data,
         roles: roles.map(item => ({ sysname: item }))
       })
     }
+
+    setModalState({ modalProps: {}, isOpen: false })
   }
 
   const onChangeCheckbox = (name) => (ev) => {
@@ -74,7 +85,7 @@ const UserFormModal = ({
   return (
     <Modal
       visible={open}
-      onCancel={() => changeModal(false)}
+      onCancel={() => setModalState(false)}
       onOk={onOk}
       className={st.modal}
       title={true ? "Добавление пользователя" : "Изменение пользователя"}

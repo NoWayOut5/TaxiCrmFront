@@ -81,8 +81,7 @@ const Users = (props) => {
           changeModal={setModalState}
           open={modalState.isOpen}
           modalProps={modalState.modalProps}
-          onAddUser={onAddUser}
-          onChangeUser={onChangeUser}
+          setModalState={setModalState}
         />
       }
     </div>

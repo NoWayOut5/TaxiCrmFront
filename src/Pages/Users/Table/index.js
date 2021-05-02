@@ -28,12 +28,10 @@ const UsersTable = ({
     setModalState({ isOpen: true, modalProps: selectedUser })
   }
 
-  console.log(dataSource, 'dataSource')
-
   const columns = [
     { title: 'Имя', dataIndex: 'name' },
     { title: 'Логин', dataIndex: 'login' },
-   /* { title: 'Контрагент', dataIndex: 'contractor'},*/
+    { title: 'Контрагент', dataIndex: 'contractor'},
     { title: 'Роль', dataIndex: 'role' },
     {
       title: 'Статус',
@@ -66,6 +64,8 @@ const UsersTable = ({
 
     },
   ]
+
+  console.log(dataSource)
 
   return (
     <Table

@@ -31,11 +31,26 @@ instance.interceptors.response.use(
       logoutEvent();
     }else if(error.response && error.response.data){
       try{
-        const { request: { responseURL }, data: { error: errorText, status } } = error.response;
+        const { request: { responseURL }, data: { message, error: errorText, path, status } } = error.response;
 
-        notification.error({ message: `${status}  ${responseURL}`})
-      }catch {}
+        notification.open({
+          message: (
+            <div style={{ fontSize: 12 }}>
+              <div style={{ color: 'red' }}><b>status:</b> {status}</div>
+              <div style={{ color: 'red' }}><b>path:</b> {path}</div>
+              <div><b>error:</b> {errorText}</div>
+              <div><b>message:</b> {message}</div>
+            </div>
+          ),
+          duration: 10,
+          style: { paddingBottom: 5, width: 400 },
+          icon: null
+        })
+      }catch(err) {
+        console.log(err)
+      }
     }
+
     return Promise.reject(error)
   }
 )
@@ -54,6 +69,7 @@ export const urls = {
 
   shedule: '/shedule/findall',
   saveShedule: '/shedule/save',
+  sheduleFindByContractor: '/shedule/find_by_contractor',
   changeShedule: '/shedule',
   importExcel: '/shedule/import',
   closeAllShedule: '/shedule/close_all_by_contractor',
