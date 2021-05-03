@@ -33,7 +33,7 @@ const CallsModal = ({
     { label: "Юл", name: "contractor_name" },
     { label: "Фио", name: "clname" },
     { label: "Телефон", name: "phone" },
-    { label: "Адрес проживания", name: "startingpoint" },
+    { label: "Пункт отправления", name: "startingpoint" },
     { label: "Способ перевозки", name: "transportway" },
     { label: "Пункт назначения", name: "destination" },
     { label: "Примечание", name: "note" },

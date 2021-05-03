@@ -53,7 +53,7 @@ const schema = {
     prop: 'city',
     type: String
   },
-  'ФИО       пациента': {
+  'ФИО пассажира': {
     prop: 'clname',
     type: String,
   },
@@ -61,7 +61,7 @@ const schema = {
     prop: 'note',
     type: String
   },
-  'Адрес проживания  (Пункт А)': {
+  'Пункт отправления  (Пункт А)': {
     prop: 'startingpoint',
     type: String,
   },

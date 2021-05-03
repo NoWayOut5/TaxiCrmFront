@@ -27,7 +27,7 @@ const ChangeSheduleModal = ({
     { label: "Юл", name: "contractorid", inputType: 'select', props: yls },
     { label: "Фио", name: "clname" },
     { label: "Телефон", name: "phone" },
-    { label: "Адрес проживания", name: "startingpoint" },
+    { label: "Пункт отправления", name: "startingpoint" },
     { label: "Способ перевозки", name: "transportway" },
     { label: "Понедельник (вперед)", inputType: 'day' },
     { label: "Понедельник (назад)", inputType: 'day' },
