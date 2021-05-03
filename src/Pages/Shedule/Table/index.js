@@ -64,7 +64,7 @@ const SheduleTable = ({
     { title: 'Воскресенье', dataIndex: ["tableDays", "in", "sun"], render: renderDay("sun") },
     { title: 'Пункт назначения', dataIndex: 'destination' },
     { title: 'Примечание', dataIndex: 'note' },
-    { title: 'Дата действия с', dataIndex: 'datefrom', render:(text)=>moment(text).format(“YYYY-MM-DD”) },
+    { title: 'Дата действия с', dataIndex: 'datefrom'},
     { title: 'Дата действия до', dataIndex: 'dateto' },
   ]
 
