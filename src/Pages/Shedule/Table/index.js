@@ -49,7 +49,7 @@ const SheduleTable = ({
 
   const columns = [
     { title: 'N', dataIndex: 'n' },
-    { title: 'Город', dataIndex: ["city", "name"] },
+    { title: 'Город', dataIndex: 'cityname' },
     { title: 'ФИО', dataIndex: 'clname' },
     { title: 'Телефон', dataIndex: 'phone' },
     { title: 'Пункт отправления', dataIndex: 'startingpoint' },

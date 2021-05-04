@@ -47,7 +47,7 @@ const App = observer((props) => {
   const tabs = [
     { title: 'Звонки', role: ROLES.calls, content: Calls, props: { isActiveTab: activeTab == '1' } },
     { title: 'Расписание', role: ROLES.shedule, content: Shedule },
-    { title: 'Отчеты', role: ROLES.reporst, content: "Content of Tab Pane 3" },
+    { title: 'Отчеты', role: ROLES.reporst, content: "В разработке" },
     { title: 'Пользователи', role: ROLES.admin, content: UsersPage },
   ].filter((tab, key) => {
     const selectedRole = userRoles.find(userRole => {

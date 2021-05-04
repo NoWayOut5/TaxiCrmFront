@@ -18,7 +18,7 @@ export const getCalls = createEffect(
 
 export const getCallsList = createEffect(
   async () => {
-    const response = await api.get(urls.callsList + '300')
+    const response = await api.get(urls.callsList + '120')
     // const response = await api.get(urls.calls)
     return response;
   }
