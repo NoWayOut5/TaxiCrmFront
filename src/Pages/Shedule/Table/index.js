@@ -30,11 +30,11 @@ const SheduleTable = ({
     let time = ''
 
     if(timeIn && !timeOut){
-      time = `Вперед ${timeIn}`
+      time = `${timeIn} |`
     }else if(timeOut && !timeIn){
-      time = `Назад ${timeOut}`
+      time = `      | ${timeOut}`
     }else if(timeIn && timeOut){
-      time = `Вперед ${timeIn} | Назад ${timeOut}`
+      time = `${timeIn} | ${timeOut}`
     }
 
     return {
