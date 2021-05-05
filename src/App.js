@@ -18,7 +18,7 @@ import Loader from "./Components/Loader";
 
 import st from './styles/app.module.scss'
 
-const DEFAULT_TAB = "4"
+const DEFAULT_TAB = "1"
 const ROLES = {
   admin: 'ROLE_ADMIN',
   calls: 'ROLE_WORKWITHCALLS',

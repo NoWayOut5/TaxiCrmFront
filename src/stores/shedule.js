@@ -7,12 +7,61 @@ const callsStore = createStore({
   tableShedule: []
 })
 
-const dayToTable = (item) => {
-  const tableDays = { in: {}, out: {} }
+const days = [
+  'mon_in',
+  'mon_out',
+  'sat_in',
+  'sat_out',
+  'sun_in',
+  'sun_out',
+  'thu_in',
+  'thu_out',
+  'tue_in',
+  'tue_out',
+  'wed_in',
+  'wed_out',
+  'fri_in',
+  'fri_out',
+]
 
-  item.days && item.days.forEach(day => {
-    tableDays[day.direction] && (tableDays[day.direction][day.name] = day.time)
+const dayToTable = (item) => {
+  const tableDays = {
+    in: {
+      'mon_in': null,
+      'sat_in': null,
+      'sun_in': null,
+      'thu_in': null,
+      'tue_in': null,
+      'wed_in': null,
+      'fri_in': null,
+    },
+    out: {
+      'mon_out': null,
+      'sat_out': null,
+      'sun_out': null,
+      'thu_out': null,
+      'tue_out': null,
+      'wed_out': null,
+      'fri_out': null
+    }
+  }
+
+  Object.keys(tableDays.in).forEach(day => {
+    item[day] && (tableDays.in[day.split('_')[0]] = item[day])
   })
+
+  Object.keys(tableDays.out).forEach(day => {
+    item[day] && (tableDays.out[day.split('_')[0]] = item[day])
+  })
+
+  console.log(tableDays, 'tableDays')
+
+  //
+  // item.days && item.days.forEach(day => {
+  //   tableDays[day.direction] && (tableDays[day.direction][day.name] = day.time)
+  // })
+
+
 
   return {
     ...item,

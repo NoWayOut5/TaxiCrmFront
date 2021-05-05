@@ -65,8 +65,6 @@ const UsersTable = ({
     },
   ]
 
-  console.log(dataSource)
-
   return (
     <Table
       columns={columns}

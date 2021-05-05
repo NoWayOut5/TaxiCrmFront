@@ -14,7 +14,6 @@ const AddCall = (props) => {
   const { regster, control, getValues, reset } = useForm()
 
   const onSave = () => {
-    // console.log(getValues())
     addCall(getValues()).then(() => {
       reset({ phone: '', note: '' })
     })

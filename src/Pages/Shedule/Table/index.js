@@ -47,6 +47,9 @@ const SheduleTable = ({
     };
   }
 
+  const renderDate = (value) => {
+    return value.split(' ')[0]
+  }
   const columns = [
     { title: 'N', dataIndex: 'n' },
     { title: 'Город', dataIndex: 'cityname' },
@@ -64,8 +67,8 @@ const SheduleTable = ({
     { title: 'Воскресенье', dataIndex: ["tableDays", "in", "sun"], render: renderDay("sun") },
     { title: 'Пункт назначения', dataIndex: 'destination' },
     { title: 'Примечание', dataIndex: 'note' },
-    { title: 'Дата действия с', dataIndex: 'datefrom'},
-    { title: 'Дата действия до', dataIndex: 'dateto' },
+    { title: 'Дата действия с', dataIndex: 'datefrom', render: renderDate },
+    { title: 'Дата действия до', dataIndex: 'dateto', render: renderDate },
   ]
 
   return (

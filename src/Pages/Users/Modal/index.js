@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { useStore } from 'effector-react'
 import globalStore from 'stores'
-import userStore, { addUser, changeUser, saveUserRoles } from 'stores/users'
+import userStore, { addUser, changeUser, saveUserRoles, addUserRoles } from 'stores/users'
 import capitalizeFirstLetter from 'helpers/capitalizeFirstLetter'
 
 import {
@@ -42,31 +42,35 @@ const UserFormModal = ({
   // }
 
   const onOk = async () => {
-    const values = getValues()
-    !values.password && (values.password = "")
+    const values = JSON.parse(JSON.stringify(getValues()));
+    values.enabled = parseInt(values.enabled);
+    const rolesItems = roles.map(item => {
+      return { sysname: item.sysname }
+    })
 
     if (modalProps.userid) {
-      await changeUser({ userId: modalProps.userid, values, roles })
       await saveUserRoles({
-        ...values,
-        roles: roles.map(item => ({ sysname: item }))
+        values,
+        userId: modalProps.userid,
+        roles: rolesItems
       })
     } else {
-      const res = await addUser({ values, roles })
-      await saveUserRoles({
-        ...res.data,
-        roles: roles.map(item => ({ sysname: item }))
+      !values.password && (values.password = "")
+      await addUserRoles({
+        values,
+        roles: rolesItems
       })
     }
 
     setModalState({ modalProps: {}, isOpen: false })
   }
 
-  const onChangeCheckbox = (name) => (ev) => {
+  const onChangeCheckbox = (roleItem) => (ev) => {
+    console.log(roleItem, 'roleItem')
     if(ev.target.checked){
-      setRoles(prev => [...prev, name])
+      setRoles(prev => [...prev, roleItem])
     } else{
-      setRoles(prev => prev.filter(item => name !== item))
+      setRoles(prev => prev.filter(item => roleItem.sysname !== item.sysname))
     }
   }
 
@@ -81,6 +85,8 @@ const UserFormModal = ({
   useEffect(() => {
     reset(modalProps)
   }, [modalProps, reset])
+
+  console.log(roles, rolesNames, 'roles')
 
   return (
     <Modal
@@ -158,8 +164,8 @@ const UserFormModal = ({
       {rolesNames.map((item, ix) => (
         <FormCheckbox
           name={item.sysname}
-          onChange={onChangeCheckbox(item.sysname)}
-          checked={roles.find(r => r == item.sysname)}
+          onChange={onChangeCheckbox(item)}
+          checked={roles.find(r => r.sysname == item.sysname)}
           key={ix}
         >
           {capitalizeFirstLetter(item.name)}
