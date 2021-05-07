@@ -46,8 +46,8 @@ export const finishOrder = createEffect(
 )
 
 export const addCall = createEffect(
-  async ({ note, phone }) => {
-    const response = await api.post(`${urls.addCall}`, { phone, note })
+  async ({ note, phone, start_call_time = '', finish_call_time = '' }) => {
+    const response = await api.post(`${urls.addCall}?note=${note}&phone=${phone}`, { phone, note, start_call_time, finish_call_time })
     return response;
   }
 )

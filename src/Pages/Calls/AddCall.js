@@ -13,10 +13,9 @@ import st from './index.module.scss'
 const AddCall = (props) => {
   const { regster, control, getValues, reset } = useForm()
 
-  const onSave = () => {
-    addCall(getValues()).then(() => {
-      reset({ phone: '', note: '' })
-    })
+  const onSave = async () => {
+    await addCall(getValues())
+    reset({ phone: '', note: '' })
   }
 
   return (

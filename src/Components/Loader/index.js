@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import cx from 'classnames'
+import globalStore, { setLoaderState } from "../../stores";
 
 import st from './index.module.scss'
 

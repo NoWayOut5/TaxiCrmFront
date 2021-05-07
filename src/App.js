@@ -27,8 +27,9 @@ const ROLES = {
 }
 
 const App = observer((props) => {
-  const [loaderState, setLoaderState] = useState();
   const [activeTab, setActiveTab] = useState(DEFAULT_TAB);
+
+  const { loaderState } = useStore(globalStore);
   const { user: { auth, roles: userRoles } } = useStore(authStore)
   const { TabPane } = Tabs;
   const userIsRepostRole = (userRoles.length == 1 && userRoles.find(r => r == ROLES.reporst))

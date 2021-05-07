@@ -5,7 +5,8 @@ import moment from 'moment'
 
 import {
   Button,
-  Input, notification
+  Input,
+  notification
 } from 'antd'
 
 import st from '../index.module.scss'
@@ -219,6 +220,7 @@ const SendExcel = ({
       })
       .catch(err => {
         console.log(err)
+        setLoaderState(false);
       })
   }
 
