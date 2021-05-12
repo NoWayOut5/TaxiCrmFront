@@ -11,17 +11,21 @@ const UsersTable = ({
   setModalState,
   onDeleteUser
 }) => {
-  const { yls } = useStore(globalStore);
+  const { yls, cities } = useStore(globalStore);
 
   const dataSource = users.map((item, ix) => {
     const contractor = yls.find(yl => yl.contractorid == item.contractorid)
+    const userCity = cities.find(city => city.cityid == item.cityid)
     return {
       ...item,
       change: item.userid,
       contractor: contractor ? contractor.name : '',
+      cityName: userCity && userCity.name,
       ix
     }
   })
+
+  console.log(dataSource, 'dataSource')
 
   const changeUser = (userId) => {
     const selectedUser = users.find(item => item.userid == userId)
@@ -33,6 +37,7 @@ const UsersTable = ({
     { title: 'Логин', dataIndex: 'login' },
     { title: 'Контрагент', dataIndex: 'contractor'},
     { title: 'Роль', dataIndex: 'role' },
+    { title: 'Город', dataIndex: 'cityName' },
     {
       title: 'Статус',
       dataIndex: 'enabled',

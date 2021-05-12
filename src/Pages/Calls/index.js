@@ -33,8 +33,6 @@ const Calls = ({
   const { calls, callsInWork } = useStore(callsStore)
   const { yls, cities } = useStore(globalStore)
 
-  console.log(isActiveTab, 'is')
-
   const openModal = (recordId) => {
     setIsOpenModal(true)
     setChangedRecordId(recordId)
@@ -44,6 +42,8 @@ const Calls = ({
     setIsOpenModal(false)
     setChangedRecordId(null)
   }
+
+  console.log(callsInWork, 'calls')
 
   useEffect(() => {
     if(isActiveTab){

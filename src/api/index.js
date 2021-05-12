@@ -84,9 +84,12 @@ export const urls = {
   callsInWorkList: '/call/inworklist',
   callsFinishOrder: '/call/end',
   addCall: '/call/save',
+  saveCall: '/call',
 
   login: '/auth/login',
-  logout: '/auth/logout'
+  logout: '/auth/logout',
+
+  getReports: '/report/getreport'
 }
 
 export default instance;

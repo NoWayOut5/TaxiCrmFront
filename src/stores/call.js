@@ -7,8 +7,6 @@ const callsStore = createStore({
   callsInWork: []
 })
 
-export const changeRecord = createEvent('changeOrder')
-
 export const getCalls = createEffect(
   async () => {
     const response = await api.get(urls.calls)
@@ -48,6 +46,13 @@ export const finishOrder = createEffect(
 export const addCall = createEffect(
   async ({ note, phone, start_call_time = '', finish_call_time = '' }) => {
     const response = await api.post(`${urls.addCall}?note=${note}&phone=${phone}`, { phone, note, start_call_time, finish_call_time })
+    return response;
+  }
+)
+
+export const changeRecordInWorkTable = createEffect(
+  async (values) => {
+    const response = await api.put(`${urls.saveCall}/${values.callid}`, values)
     return response;
   }
 )
@@ -92,13 +97,13 @@ callsStore
       callsInWork
     }
   })
-  .on(changeRecord, (state, payload) => {
-    const { callid } = payload;
-    const { callsInWork } = state
+  .on(changeRecordInWorkTable.done, (state, payload) => {
+    const { result: { data } } = payload;
+    const { callsInWork } = state;
 
     return {
       ...state,
-      callsInWork: callsInWork.map(item => item.callid == callid ? {...item, ...payload} : item)
+      callsInWork: callsInWork.map(item => item.callid == data.callid ? { ...item, ...data } : item)
     }
   })
   .on(addCall.done, (state, payload) => {

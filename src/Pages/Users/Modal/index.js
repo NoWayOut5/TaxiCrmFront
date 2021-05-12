@@ -30,43 +30,25 @@ const UserFormModal = ({
   const { rolesNames } = useStore(userStore)
   const { Option } = Select;
 
-  // const onAddUser = async (values) => {
-  //   const res = await addUser(values)
-  //   setModalState({ modalProps: {}, isOpen: false })
-  //   return res;
-  // }
-  //
-  // const onChangeUser = async (userId, values) => {
-  //   await changeUser({ userId, values })
-  //   setModalState({ modalProps: {}, isOpen: false })
-  // }
-
   const onOk = async () => {
     const values = JSON.parse(JSON.stringify(getValues()));
+
     values.enabled = parseInt(values.enabled);
     const rolesItems = roles.map(item => {
       return { sysname: item.sysname }
     })
 
     if (modalProps.userid) {
-      await saveUserRoles({
-        values,
-        userId: modalProps.userid,
-        roles: rolesItems
-      })
+      await saveUserRoles({ values, userId: modalProps.userid, roles: rolesItems })
     } else {
       !values.password && (values.password = "")
-      await addUserRoles({
-        values,
-        roles: rolesItems
-      })
+      await addUserRoles({ values, roles: rolesItems })
     }
 
     setModalState({ modalProps: {}, isOpen: false })
   }
 
   const onChangeCheckbox = (roleItem) => (ev) => {
-    console.log(roleItem, 'roleItem')
     if(ev.target.checked){
       setRoles(prev => [...prev, roleItem])
     } else{
@@ -80,13 +62,12 @@ const UserFormModal = ({
     register('password')
     register('enabled')
     register('contractorid')
+    register('cityid')
   }, [register])
 
   useEffect(() => {
     reset(modalProps)
   }, [modalProps, reset])
-
-  console.log(roles, rolesNames, 'roles')
 
   return (
     <Modal
@@ -139,6 +120,29 @@ const UserFormModal = ({
             </Select>
           )}
           name="contractorid"
+          control={control}
+        />
+        <Controller
+          render={({ onChange, onBlur, value }) => (
+            <Select
+              onChange={onChange}
+              onBlur={onBlur}
+              // value={yls[modalProps.contractorid] && yls[modalProps.contractorid].name}
+              value={value}
+              className={st.select}
+              placeholder="Выбрать город"
+            >
+              {cities && cities.map(item => (
+                <Option
+                  key={item.cityid}
+                  value={item.cityid}
+                >
+                  {item.name}
+                </Option>
+              ))}
+            </Select>
+          )}
+          name="cityid"
           control={control}
         />
         <Controller
