@@ -30,6 +30,8 @@ const CallsTable = ({
     { title: 'Адрес назначения', dataIndex: 'destination' },
     { title: 'Дата', dataIndex: 'shedule_day' },
     { title: 'Время', dataIndex: 'shedule_time' },
+    { title: 'Время московское', dataIndex: 'shed_time_msk' },
+    { title: 'Время пользователя', dataIndex: 'shed_time_user' },
     {
       title: 'Статус обработки',
       render: (row) => {
