@@ -20,12 +20,10 @@ const UsersTable = ({
       ...item,
       change: item.userid,
       contractor: contractor ? contractor.name : '',
-      cityName: userCity && userCity.name,
+      cityName: userCity ? userCity.name : '',
       ix
     }
   })
-
-  console.log(dataSource, 'dataSource')
 
   const changeUser = (userId) => {
     const selectedUser = users.find(item => item.userid == userId)

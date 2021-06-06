@@ -73,11 +73,11 @@ callsStore
   })
   .on(saveUserRoles.done, (state, payload) => {
     const { users } = state;
-    const { userId, values, roles } = payload.params;
+    const { params: { userId, roles }, result: { data } } = payload
 
     const ix = users.findIndex(item => item.userid == userId)
     const newUsers = [...users]
-    newUsers[ix] = { ...values, userRolesNames: roles }
+    newUsers[ix] = { ...data, userRolesNames: roles }
 
     return {
       ...state,
@@ -94,12 +94,6 @@ callsStore
       users: [ ...state.users, newUser ]
     }
   })
-  // .on(saveUserRoles.done, (state, payload) => {
-  //   return {
-  //     ...state,
-  //     users
-  //   }
-  // })
   .on(deleteUser.done, (state, payload) => {
     const userId = payload.params
 
