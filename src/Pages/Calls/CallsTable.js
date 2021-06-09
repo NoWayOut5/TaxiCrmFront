@@ -14,8 +14,8 @@ const CallsTable = ({
   const dataSource = data.map((item, ix) => ({
     ...item,
     table_time: `${item.shedule_day} : ${item.sheduletime}`,
-    cityname: item.city_name && cities.find(c => c.cityid == item.city_name),
-    contractorname: item.contractor_name && yls.find(y => y.contractorid == item.contractor_name),
+    //cityname: item.city_name && cities.find(c => c.cityid == item.city_name),
+    //contractorname: item.contractor_name && yls.find(y => y.contractorid == item.contractor_name),
     'n': ix + 1,
   }))
 
