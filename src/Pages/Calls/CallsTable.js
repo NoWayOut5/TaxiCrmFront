@@ -43,6 +43,7 @@ const CallsTable = ({
       render: ({ sheduleid, dayid, user_name }) => {
         const btn = (
           <Button
+            type="primary"
             onClick={() => takeInOrder({ sheduleid, dayid })}
           >
             Взять в работу
@@ -61,6 +62,7 @@ const CallsTable = ({
         pagination={{ showSizeChanger: true }}
         dataSource={dataSource}
         className={st.callsTable}
+        rowKey={(row) => row.callid}
       />
     </div>
   )

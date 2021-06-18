@@ -5,6 +5,7 @@ import api, { urls } from 'api';
 import { useStore } from "effector-react";
 import globalStore, { getCities, getYls } from "./stores";
 import authStore, { logoutUser } from "./stores/auth";
+// import history from 'history'
 
 import {
   Button
@@ -46,10 +47,31 @@ const App = observer((props) => {
   }
 
   const tabs = [
-    { title: 'Звонки', role: ROLES.calls, content: Calls, props: { isActiveTab: activeTab == '1' } },
-    { title: 'Расписание', role: ROLES.shedule, content: Shedule },
-    { title: 'Отчеты', role: ROLES.reporst, content: Reports },
-    { title: 'Пользователи', role: ROLES.admin, content: UsersPage },
+    {
+      title: 'Звонки',
+      role: ROLES.calls,
+      url: 'calls',
+      content: Calls,
+      props: { isActiveTab: activeTab == '1' }
+    },
+    {
+      title: 'Расписание',
+      role: ROLES.shedule,
+      url: 'shedule',
+      content: Shedule
+    },
+    {
+      title: 'Отчеты',
+      role: ROLES.reporst,
+      url: 'reports',
+      content: Reports
+    },
+    {
+      title: 'Пользователи',
+      role: ROLES.admin,
+      url: 'users',
+      content: UsersPage
+    },
   ].filter((tab, key) => {
     const selectedRole = userRoles.find(userRole => {
       return userRole == ROLES.admin || userRole == tab.role;
@@ -70,7 +92,7 @@ const App = observer((props) => {
         defaultActiveKey={DEFAULT_TAB}
         type="card"
         tabBarExtraContent={{
-          right: <Button onClick={logoutUser}>Выход</Button>
+          right: <Button type="primary" onClick={logoutUser}>Выход</Button>
         }}
         style={{ width: '100%' }}
         onChange={(activeTab) => {

@@ -1,6 +1,7 @@
 import axios from "axios";
 import { logoutEvent } from '../stores/auth'
 import { notification } from 'antd'
+import {closeShedule} from "../stores/shedule";
 
 const instance = axios.create({
   baseURL: 'https://taxicrmback-preprod.herokuapp.com',
@@ -68,11 +69,13 @@ export const urls = {
   getYl: '/contractor/findall',
 
   shedule: '/shedule/findall',
-  saveShedule: '/shedule/import',
+  saveShedule: '/shedule/save',
   sheduleFindByContractor: '/shedule/find_by_contractor',
   changeShedule: '/shedule',
+  sheduleImport: '/shedule/import',
   importExcel: '/shedule/import',
   closeAllShedule: '/shedule/close_all_by_contractor',
+  closeShedule: '/shedule',
 
   changeDay: '/day/',
   saveDay: '/days/save',
@@ -85,6 +88,7 @@ export const urls = {
   callsFinishOrder: '/call/end',
   addCall: '/call/save',
   saveCall: '/call',
+  createCall: '/call/create',
 
   login: '/auth/login',
   logout: '/auth/logout',

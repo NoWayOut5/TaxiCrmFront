@@ -1,13 +1,14 @@
 import { createStore, createEvent, createEffect } from 'effector';
 import api, { urls } from 'api';
 import globalStore from './index'
+import {values} from "mobx";
 
 const callsStore = createStore({
   shedule: [],
   tableShedule: []
 })
 
-const days = [
+export const daysList = [
   'mon_in',
   'mon_out',
   'sat_in',
@@ -54,15 +55,6 @@ const dayToTable = (item) => {
     item[day] && (tableDays.out[day.split('_')[0]] = item[day])
   })
 
-  console.log(tableDays, 'tableDays')
-
-  //
-  // item.days && item.days.forEach(day => {
-  //   tableDays[day.direction] && (tableDays[day.direction][day.name] = day.time)
-  // })
-
-
-
   return {
     ...item,
     tableDays
@@ -85,11 +77,34 @@ export const addShedule = createEffect(
   }
 )
 
+export const addSheduleNew = createEffect(
+  async (values) => {
+    const response = await api.post(urls.sheduleImport, values)
+    return response;
+  }
+)
+
+export const closeShedule = createEffect(
+  async (id) => {
+    const response = await api.post(`${urls.closeShedule}/${id}`, values)
+    return response;
+  }
+)
+
 export const changeShedule = createEffect(
   async (values) => {
     const { data, sheduleid } = values;
 
     const response = await api.put(urls.changeShedule + "/" + sheduleid, data)
+    return response;
+  }
+)
+
+export const changeSheduleNew = createEffect(
+  async (values) => {
+    const { data, sheduleid } = values;
+
+    const response = await api.post(urls.sheduleImport, data)
     return response;
   }
 )
@@ -131,6 +146,19 @@ callsStore
     }
   })
   .on(changeShedule.done, (state, payload) => {
+    const { params: { sheduleid }, result: { data } } = payload;
+
+    const newShedule = state.shedule.map(item => {
+      return item.sheduleid == sheduleid ? { ...item, ...data } : item
+    })
+
+    return {
+      ...state,
+      shedule: newShedule,
+      tableShedule: newShedule.map(dayToTable)
+    }
+  })
+  .on(changeSheduleNew.done, (state, payload) => {
     const { params: { sheduleid }, result: { data } } = payload;
 
     const newShedule = state.shedule.map(item => {

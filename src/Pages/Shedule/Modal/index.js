@@ -3,14 +3,35 @@ import { useStore } from 'effector-react'
 import { Controller, useForm } from 'react-hook-form'
 import moment from 'moment'
 import { Input, Modal, Select } from 'antd'
+import InputMask from 'react-input-mask'
 
-import globalStore from '../../../stores'
+import globalStore, { getYlNameById, getCityNameById } from '../../../stores'
 import {
   addShedule,
-  changeShedule
-} from '../../../stores/shedule'
+  changeShedule,
+  changeSheduleNew,
+  addSheduleNew,
+  getShedule,
+  daysList
+} from 'stores/shedule'
 
 import FormItem from '../../../Components/FormItem'
+import cx from "classnames";
+import st from "../../Calls/index.module.scss";
+
+const InputWithMask = (props) => {
+  // console.log(props)
+  return (
+    <InputMask
+      mask="99:99"
+      value={props.value}
+      onChange={props.onChange}
+      onBlur={props.onBlur}
+      className={cx("ant-input", st.callInput)}
+      placeholder="00:00"
+    />
+  )
+};
 
 const ChangeSheduleModal = ({
   isModalOpen,
@@ -61,19 +82,48 @@ const ChangeSheduleModal = ({
   const { Option } = Select;
 
   useEffect(() => {
+    console.log('wrf')
     reset(modalProps)
   }, [modalProps])
 
-  const onOk = () => {
+  const sendData = async () => {
     const data = JSON.parse(JSON.stringify(getValues()));
     delete data.days;
 
+    Object.keys(data).map(item => {
+      if(daysList.indexOf(item) > -1 && data[item] && data[item].length > 5){
+        data[item] = data[item].slice(0, 5)
+      }
+    })
+
+    let res;
+
+    const contractor = getYlNameById(data.contractorid)
+    const city = getCityNameById(data.cityid)
+
     if(modalProps && modalProps.sheduleid){
-      changeShedule({ data, sheduleid: modalProps.sheduleid })
+      res = await changeSheduleNew({
+        data: {
+          ...data,
+          city,
+          contractor,
+          sheduleid: modalProps.sheduleid
+        },
+        sheduleid: modalProps.sheduleid
+      })
       changeIsOpenModal()
     }else{
-      addShedule(data)
+      res = await addSheduleNew({ ...data, city, contractor })
       changeIsOpenModal()
+    }
+
+    return res;
+  }
+
+  const onOk = async () => {
+    const data = await sendData();
+    if(data.status == 200){
+      getShedule();
     }
   }
 
@@ -118,8 +168,11 @@ const ChangeSheduleModal = ({
                 />
               ),
               'day': (
-                <Input
-                  value={''}
+                <Controller
+                  as={<InputWithMask />}
+                  name={name}
+                  control={control}
+                  defaultValue={defaultValue}
                 />
               ),
               'undefined': (
