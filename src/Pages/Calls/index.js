@@ -55,7 +55,7 @@ const Calls = ({
         interval = setInterval(() => {
           getCallsList();
           getCallsInWork();
-        }, 60000)
+        }, 5000)
       }
 
       return () => {

@@ -38,7 +38,7 @@ const CallsModal = ({
     { label: "Фио", name: "clname" },
     { label: "Телефон", name: "phone" },
     { label: "Пункт отправления", name: "startingpoint" },
-    { label: "Способ перевозки", name: "transportway" },
+    /*{ label: "Способ перевозки", name: "transportway" },*/
     { label: "Пункт назначения", name: "destination" },
     { label: "Примечание", name: "note" },
     { label: "Класс авто", name: "autoclass" },
