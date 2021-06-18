@@ -68,7 +68,7 @@ export const urls = {
   getYl: '/contractor/findall',
 
   shedule: '/shedule/findall',
-  saveShedule: '/shedule/save',
+  saveShedule: '/shedule/import',
   sheduleFindByContractor: '/shedule/find_by_contractor',
   changeShedule: '/shedule',
   importExcel: '/shedule/import',
