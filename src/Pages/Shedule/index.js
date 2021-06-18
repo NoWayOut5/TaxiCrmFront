@@ -57,14 +57,14 @@ const Shedule = () => {
         setModalProps={setModalProps}
       />
       <div className={st.excelContainer}>
-          {/*<Button
+          {<Button
           onClick={() => {
             setModalProps(null)
             changeIsOpenModal()
           }}
         >
           Добавить
-        </Button>*/}
+        </Button>}
         <SendExcel
           name="excelFile"
           title="Загрузить excel файл"
