@@ -49,6 +49,7 @@ const ReportsTable = ({
     { title: 'Дата заказа (местная)', dataIndex: 'shed_time_loc' },
     { title: 'Дата заказа (мск)', dataIndex: 'shed_time_msk' },
     { title: 'Примечание', dataIndex: 'note' },
+    { title: 'Дата начала обработки', dataIndex: 'start_call_time' },
   ]
 
   const dataTable = reports;
