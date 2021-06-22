@@ -83,7 +83,7 @@ export const urls = {
   callsBegin: '/call/begin',
   callsInWorkList: '/call/inworklist',
   callsFinishOrder: '/call/end',
-  addCall: '/call/create',
+  addCall: '/call/save',
   saveCall: '/call',
 
   login: '/auth/login',
