@@ -32,7 +32,7 @@ const InputWithMask = (props) => {
        type="text"
        className={cx("ant-input", st.callInput)}
        autoComplete="on"
-       placeholder="_(___)-___-_____"
+       placeholder="8(9__)-___-_____"
      />
    </InputMask>
   )
@@ -49,7 +49,7 @@ const AddCall = (props) => {
   const onSave = async (ev) => {
     ev.preventDefault();
 
-    // await addCallNew(getValues())
+    await addCallNew(getValues())
     reset({ phone: '', note: '' });
     setPhone('')
   }
