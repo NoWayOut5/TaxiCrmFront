@@ -104,11 +104,15 @@ const UserFormModal = ({
             <Select
               onChange={onChange}
               onBlur={onBlur}
-              // value={yls[modalProps.contractorid] && yls[modalProps.contractorid].name}
               value={value}
               className={st.select}
               placeholder="Юл (выбираем из справочника юл)"
             >
+              <Option
+                value={null}
+              >
+                Отсутствует
+              </Option>
               {yls && yls.map(item => (
                 <Option
                   key={item.contractorid}
@@ -127,7 +131,6 @@ const UserFormModal = ({
             <Select
               onChange={onChange}
               onBlur={onBlur}
-              // value={yls[modalProps.contractorid] && yls[modalProps.contractorid].name}
               value={value}
               className={st.select}
               placeholder="Выбрать город"

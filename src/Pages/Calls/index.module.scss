@@ -4,17 +4,17 @@
   overflow-y: scroll;
 }
 
-.callsInWorkTable{
-
-}
-
 .calls{
   max-height: 41vh;
   overflow-y: scroll;
 }
 
-.callsTable{
+.callInput{
+  letter-spacing: 1px;
 
+  &::placeholder{
+    letter-spacing: 1px !important;
+  }
 }
 
 .addCall{

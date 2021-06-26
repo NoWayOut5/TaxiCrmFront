@@ -50,6 +50,13 @@ export const addCall = createEffect(
   }
 )
 
+export const addCallNew = createEffect(
+  async ({ note, phone, start_call_time = '', finish_call_time = '' }) => {
+    const response = await api.get(`${urls.createCall}/${phone}/${note}`, { phone, note, start_call_time, finish_call_time })
+    return response;
+  }
+)
+
 export const changeRecordInWorkTable = createEffect(
   async (values) => {
     const response = await api.put(`${urls.saveCall}/${values.callid}`, values)
@@ -107,6 +114,12 @@ callsStore
     }
   })
   .on(addCall.done, (state, payload) => {
+    return {
+      ...state,
+      callsInWork: [...state.callsInWork, payload.result.data]
+    }
+  })
+  .on(addCallNew.done, (state, payload) => {
     return {
       ...state,
       callsInWork: [...state.callsInWork, payload.result.data]

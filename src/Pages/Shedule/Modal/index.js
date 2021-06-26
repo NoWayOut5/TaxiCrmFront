@@ -3,14 +3,47 @@ import { useStore } from 'effector-react'
 import { Controller, useForm } from 'react-hook-form'
 import moment from 'moment'
 import { Input, Modal, Select } from 'antd'
+import InputMask from 'react-input-mask'
 
-import globalStore from '../../../stores'
+import globalStore, { getYlNameById, getCityNameById } from '../../../stores'
 import {
   addShedule,
-  changeShedule
-} from '../../../stores/shedule'
+  changeShedule,
+  changeSheduleNew,
+  addSheduleNew,
+  getShedule,
+  daysList
+} from 'stores/shedule'
 
 import FormItem from '../../../Components/FormItem'
+import cx from "classnames";
+import st from "../../Calls/index.module.scss";
+
+const InputWithMask = (props) => {
+  return (
+    <InputMask
+      mask="99:99"
+      value={props.value}
+      onChange={props.onChange}
+      onBlur={props.onBlur}
+      className={cx("ant-input", st.callInput)}
+      placeholder="00:00"
+    />
+  )
+};
+
+const DateWithMask = (props) => {
+  return (
+    <InputMask
+      mask="9999-99-99"
+      value={props.value ? props.value.split(' ')[0] : ''}
+      onChange={props.onChange}
+      onBlur={props.onBlur}
+      className={cx("ant-input", st.callInput)}
+      placeholder="2100-01-01"
+    />
+  )
+};
 
 const ChangeSheduleModal = ({
   isModalOpen,
@@ -25,54 +58,86 @@ const ChangeSheduleModal = ({
   const items = [
     { label: "Город", name: "cityid", inputType: 'select', props: cities },
     { label: "Юл", name: "contractorid", inputType: 'select', props: yls },
+    { label: "Активно с",
+      name: "datefrom",
+      defaultValue: moment().format("YYYY-MM-DD"),
+      inputType: 'date'
+    },
+    { label: "Активно до",
+      name: "dateto",
+      defaultValue: moment().set({ 'year': 2100, 'month': 1, 'day': 1 }).format("YYYY-MM-DD"),
+      inputType: 'date'
+    },
     { label: "Фио", name: "clname" },
     { label: "Телефон", name: "phone" },
     { label: "Пункт отправления", name: "startingpoint" },
-    { label: "Способ перевозки", name: "transportway" },
-    { label: "Понедельник (вперед)", inputType: 'day' },
-    { label: "Понедельник (назад)", inputType: 'day' },
-    { label: "Вторник (вперед)", inputType: 'day' },
-    { label: "Вторник (назад)", inputType: 'day' },
-    { label: "Среда (вперед)", inputType: 'day' },
-    { label: "Среда (назад)", inputType: 'day' },
-    { label: "Четверг (вперед)", inputType: 'day' },
-    { label: "Четверг (назад)", inputType: 'day' },
-    { label: "Пятница (вперед)", inputType: 'day' },
-    { label: "Пятница (назад)", inputType: 'day' },
-    { label: "Суббота (вперед)", inputType: 'day' },
-    { label: "Суббота (назад)", inputType: 'day' },
-    { label: "Воскресенье (вперед)", inputType: 'day' },
-    { label: "Воскресенье (назад)", inputType: 'day' },
     { label: "Пункт назначения", name: "destination" },
+    { label: "Класс авто", name: "autoclass" },
+    { label: "Способ перевозки", name: "transportway" },
     { label: "Примечание", name: "note" },
-    {
-      label: "Активно с",
-      name: "datefrom",
-      defaultValue: moment().format("YYYY-MM-DD")
-    },
-    {
-      label: "Активно до",
-      name: "dateto",
-      defaultValue: moment().set({ 'year': 2099, 'month': 12, 'day': 31 }).format("YYYY-MM-DD")
-    },
+    { label: "Понедельник (вперед)", name: "mon_in", inputType: 'day' },
+    { label: "Понедельник (назад)", name: "mon_out", inputType: 'day' },
+    { label: "Вторник (вперед)", name: "tue_in", inputType: 'day' },
+    { label: "Вторник (назад)", name: "tue_out", inputType: 'day' },
+    { label: "Среда (вперед)", name: "wed_in", inputType: 'day' },
+    { label: "Среда (назад)", name: "wed_out", inputType: 'day' },
+    { label: "Четверг (вперед)", name: "thu_in", inputType: 'day' },
+    { label: "Четверг (назад)", name: "thu_out", inputType: 'day' },
+    { label: "Пятница (вперед)", name: "fri_in", inputType: 'day' },
+    { label: "Пятница (назад)", name: "fri_out", inputType: 'day' },
+    { label: "Суббота (вперед)", name: "sat_in", inputType: 'day' },
+    { label: "Суббота (назад)", name: "sat_out", inputType: 'day' },
+    { label: "Воскресенье (вперед)", name: "sun_in", inputType: 'day' },
+    { label: "Воскресенье (назад)", name: "sun_out", inputType: 'day' },
+    { label: "Заказчик", name: "customer" },
+    { label: "Наименование центра", name: "destname" }
   ]
 
   const { Option } = Select;
 
   useEffect(() => {
+    console.log('wrf')
     reset(modalProps)
   }, [modalProps])
 
-  const onOk = () => {
+  const sendData = async () => {
     const data = JSON.parse(JSON.stringify(getValues()));
     delete data.days;
 
+    Object.keys(data).map(item => {
+      if(daysList.indexOf(item) > -1 && data[item] && data[item].length > 5){
+        data[item] = data[item].slice(0, 5)
+      }
+    })
+
+    let res;
+
+    const contractor = getYlNameById(data.contractorid)
+    const city = getCityNameById(data.cityid)
+
     if(modalProps && modalProps.sheduleid){
-      changeShedule({ data, sheduleid: modalProps.sheduleid })
+      res = await changeSheduleNew({
+        data: {
+          ...data,
+          city,
+          contractor,
+          sheduleid: modalProps.sheduleid
+        },
+        sheduleid: modalProps.sheduleid
+      })
       changeIsOpenModal()
     }else{
-      addShedule(data)
+      res = await addSheduleNew({ ...data, city, contractor })
       changeIsOpenModal()
+    }
+
+    return res;
+  }
+
+  const onOk = async () => {
+    const data = await sendData();
+    if(data.status == 200){
+      getShedule();
     }
   }
 
@@ -117,14 +182,25 @@ const ChangeSheduleModal = ({
                 />
               ),
               'day': (
-                <Input
-                  value={''}
+                <Controller
+                  as={<InputWithMask />}
+                  name={name}
+                  control={control}
+                  defaultValue={defaultValue}
+                />
+              ),
+              'date': (
+                <Controller
+                  as={<DateWithMask />}
+                  name={name}
+                  control={control}
+                  defaultValue={defaultValue}
                 />
               ),
               'undefined': (
                 <Controller
                   as={<Input />}
-                  name={dayName ? dayName + '_' + dayDirection : name }
+                  name={dayName ? dayName + '_' + dayDirection : name}
                   control={control}
                   defaultValue={defaultValue}
                 />

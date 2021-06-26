@@ -236,14 +236,14 @@ const SendExcel = ({
 
   return (
     <div>
-      <label className="ant-btn" htmlFor={name}>
+      <label className="ant-btn ant-btn-primary" htmlFor={name}>
         {title}
       </label>
       <input
         type="file"
         id={name}
         onChange={onChange}
-        className={st.fileInput}
+        className={`${st.fileInput}`}
       />
     </div>
   )

@@ -1,9 +1,16 @@
 import React from 'react'
 import { useStore } from 'effector-react'
-import globalStore from '../../../stores'
-import sheduleStore from '../../../stores/shedule'
+import globalStore from 'stores'
+import sheduleStore, {
+  changeShedule,
+  getShedule
+} from 'stores/shedule'
+import moment from 'moment';
 
-import { Table } from 'antd'
+import {
+  Table,
+  Button
+} from 'antd'
 
 import st from '../index.module.scss'
 
@@ -69,6 +76,26 @@ const SheduleTable = ({
     { title: 'Примечание', dataIndex: 'note' },
     { title: 'Дата действия с', dataIndex: 'datefrom', render: renderDate },
     { title: 'Дата действия до', dataIndex: 'dateto', render: renderDate },
+    {
+      title: '',
+      render: (row) => {
+        const sendData = async () => {
+          const data = JSON.parse(JSON.stringify(row))
+          delete data.n;
+          delete data.tableDays;
+
+          data.dateto = moment().format("YYYY-MM-DD HH:mm:ss")
+          await changeShedule({ data, sheduleid: data.sheduleid });
+          getShedule();
+        }
+
+        return (
+          <Button type="primary" onClick={sendData}>Закрыть</Button>
+        )
+      }
+
+
+    },
   ]
 
   return (
@@ -78,10 +105,11 @@ const SheduleTable = ({
       showHeader={true}
       size="middle"
       bordered={true}
-      rowClassName={st.row}
       style={{ height: '100%' }}
-      pagination={{ showSizeChanger: true }}
+      pagination={{ showSizeChanger: true, defaultPageSize: 50 }}
       scroll={{ x: true }}
+      rowClassName={st.row}
+      rowKey={rec => rec.sheduleid}
       onRow={(row) => ({
         onDoubleClick: () => {
           setModalProps(row)

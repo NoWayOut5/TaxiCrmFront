@@ -43,8 +43,6 @@ const Calls = ({
     setChangedRecordId(null)
   }
 
-  console.log(callsInWork, 'calls')
-
   useEffect(() => {
     if(isActiveTab){
       getCallsList();
@@ -76,11 +74,13 @@ const Calls = ({
         data={callsInWork}
         openModal={openModal}
       />
+      {isOpenModal &&
       <CallsModal
         open={isOpenModal}
         closeModal={closeModal}
         changedRecordId={changedRecordId}
       />
+      }
     </div>
   )
 }

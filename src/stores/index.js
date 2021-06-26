@@ -48,8 +48,21 @@ globalStore
     }
   })
 
-// getCities.done.watch((payload) => {
-//   setCitiesNames(payload.result.data)
-// })
-
 export default globalStore;
+
+export const getYlNameById = (contractorid) => {
+  const { yls } = globalStore.getState();
+
+  if(contractorid){
+    const selectedYl = yls.find(c => c.contractorid == contractorid)
+    return selectedYl && selectedYl.name
+  }
+}
+export const getCityNameById = (cityid) => {
+  const { cities } = globalStore.getState();
+
+  if(cityid){
+    const selectedCity = cities.find(c => c.cityid == cityid)
+    return selectedCity && selectedCity.name
+  }
+}

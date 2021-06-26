@@ -28,7 +28,6 @@ const CallsModal = ({
       setSelectedItem(item)
       reset(item)
       register('callid', item.callid)
-      console.log(item, 'seleted')
     }
   }, [changedRecordId, reset])
 

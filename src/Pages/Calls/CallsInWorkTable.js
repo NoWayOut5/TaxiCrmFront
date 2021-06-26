@@ -2,6 +2,7 @@ import React from 'react'
 import { Table, Button } from 'antd'
 import { finishOrder } from '../../stores/call'
 import globalStore from "../../stores";
+import moment from "moment";
 
 import st from './index.module.scss'
 import { useStore } from "effector-react";
@@ -35,12 +36,17 @@ const CallsInWorkTable = ({
     { title: 'Телефон', dataIndex: 'phone' },
     { title: 'Адрес отправления', dataIndex: 'startingpoint' },
     { title: 'Адрес назначения', dataIndex: 'destination' },
-    { title: 'Дата', dataIndex: 'shedule_day' },
-    { title: 'Время', dataIndex: 'shedule_time' },
+    {
+      title: 'Дата (текущая дата)',
+      dataIndex: 'shedule_day',
+      render: (row) => moment(row).format('yyyy-MM-DD hh:mm:ss')
+    },
+    { title: 'Время (вперед/назад)', dataIndex: 'shedule_time' },
     {
       title: '',
       render: (row) => (
         <Button
+          type="primary"
           onClick={(ev) => {
             ev.stopPropagation()
             finishOrder(row.callid)
@@ -62,6 +68,7 @@ const CallsInWorkTable = ({
         pagination={{ showSizeChanger: true }}
         size="small"
         className={st.callsInWorkTable}
+        rowKey={row => row.callid}
         onRow={(record) => {
           return {
             onDoubleClick(){
