@@ -44,15 +44,15 @@ const ChangeSheduleModal = ({
   const { control, getValues, reset } = useForm();
 
   const items = [
-    { label: "Город", name: "city", inputType: 'select', props: cities },
-    { label: "Контрагент", name: "contractor", inputType: 'select', props: yls },
+    { label: "Город", name: "cityid", inputType: 'select', props: cities },
+    { label: "Юл", name: "contractorid", inputType: 'select', props: yls },
     { label: "Активно с",
       name: "datefrom",
       defaultValue: moment().format("YYYY-MM-DD")
     },
     { label: "Активно до",
       name: "dateto",
-      defaultValue: moment().set({ 'year': 2099, 'month': 12, 'day': 31 }).format("YYYY-MM-DD")
+      defaultValue: moment().set({ 'year': 2100, 'month': 01, 'day': 01 }).format("YYYY-MM-DD")
     },
     { label: "Фио", name: "clname" },
     { label: "Телефон", name: "phone" },
