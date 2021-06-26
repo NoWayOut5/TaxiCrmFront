@@ -20,7 +20,6 @@ import cx from "classnames";
 import st from "../../Calls/index.module.scss";
 
 const InputWithMask = (props) => {
-  // console.log(props)
   return (
     <InputMask
       mask="99:99"
@@ -29,6 +28,19 @@ const InputWithMask = (props) => {
       onBlur={props.onBlur}
       className={cx("ant-input", st.callInput)}
       placeholder="00:00"
+    />
+  )
+};
+
+const DateWithMask = (props) => {
+  return (
+    <InputMask
+      mask="9999-99-99"
+      value={props.value ? props.value.split(' ')[0] : ''}
+      onChange={props.onChange}
+      onBlur={props.onBlur}
+      className={cx("ant-input", st.callInput)}
+      placeholder="2100-01-01"
     />
   )
 };
@@ -48,11 +60,13 @@ const ChangeSheduleModal = ({
     { label: "Юл", name: "contractorid", inputType: 'select', props: yls },
     { label: "Активно с",
       name: "datefrom",
-      defaultValue: moment().format("YYYY-MM-DD")
+      defaultValue: moment().format("YYYY-MM-DD"),
+      inputType: 'date'
     },
     { label: "Активно до",
       name: "dateto",
-      defaultValue: moment().set({ 'year': 2100, 'month': 1, 'day': 1 }).format("YYYY-MM-DD")
+      defaultValue: moment().set({ 'year': 2100, 'month': 1, 'day': 1 }).format("YYYY-MM-DD"),
+      inputType: 'date'
     },
     { label: "Фио", name: "clname" },
     { label: "Телефон", name: "phone" },
@@ -175,10 +189,18 @@ const ChangeSheduleModal = ({
                   defaultValue={defaultValue}
                 />
               ),
+              'date': (
+                <Controller
+                  as={<DateWithMask />}
+                  name={name}
+                  control={control}
+                  defaultValue={defaultValue}
+                />
+              ),
               'undefined': (
                 <Controller
                   as={<Input />}
-                  name={dayName ? dayName + '_' + dayDirection : name }
+                  name={dayName ? dayName + '_' + dayDirection : name}
                   control={control}
                   defaultValue={defaultValue}
                 />

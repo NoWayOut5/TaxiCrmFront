@@ -20,13 +20,15 @@ const InputWithMask = (props) => {
   }, [props])
 
   return (
-   <InputMask
-     mask={value ? "9(999)-999-9999" : null}
-     value={value}
-     onChange={(ev) => {
-       setValue(ev.target.value);
-       props.onChange(ev.target.value);
-     }}
+  <InputMask
+    mask={value ? "8(\\999)-999-9999" : ""}
+    value={value}
+    name="phone"
+    onChange={(ev) => {
+      ev.preventDefault()
+      setValue(ev.target.value);
+      props.onChange(ev.target.value);
+    }}
    >
      <input
        type="text"
