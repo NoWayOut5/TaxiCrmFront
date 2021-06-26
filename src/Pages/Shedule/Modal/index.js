@@ -52,7 +52,7 @@ const ChangeSheduleModal = ({
     },
     { label: "Активно до",
       name: "dateto",
-      defaultValue: moment().set({ 'year': 2100, 'month': 01, 'day': 01 }).format("YYYY-MM-DD")
+      defaultValue: moment().set({ 'year': 2100, 'month': 1, 'day': 1 }).format("YYYY-MM-DD")
     },
     { label: "Фио", name: "clname" },
     { label: "Телефон", name: "phone" },
