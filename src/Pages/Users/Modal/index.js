@@ -106,7 +106,7 @@ const UserFormModal = ({
               onBlur={onBlur}
               value={value}
               className={st.select}
-              placeholder="Юл (выбираем из справочника юл)"
+              placeholder="Выбрать контрагента"
             >
               <Option
                 value={null}
